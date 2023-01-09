@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* File System */
 .item {
-    @apply max-w-full overflow-x-hidden text-ellipsis flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors;
+    @apply flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors select-none;
+}
+
+.item > * {
+    @apply flex-shrink-0;
+}
+
+.item > span {
+    @apply max-w-full overflow-x-hidden text-ellipsis whitespace-nowrap;
+}
+
+/* React Split Styling */
+.gutter {
+    @apply relative cursor-col-resize;
+}
+
+.gutter.gutter-horizontal::before {
+    content: " ";
+    @apply opacity-0 bg-blue-200 absolute w-full h-full transition-opacity;
+    /* @apply  */
+}
+
+.gutter:hover.gutter-horizontal::before {
+    @apply opacity-100;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    @apply w-1;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full transition-colors;
 }

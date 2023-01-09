@@ -18,7 +18,7 @@ const Folder = (props: FolderProps) => {
                 }}
             >
                 {open ? <IoChevronDown /> : <IoChevronForward />}
-                {props.name}
+                <span>{props.name}</span>
             </div>
             <div className="pl-6 relative before:absolute before:left-3.5 before:h-full before:w-[1px] before:bg-slate-400">
                 {open && <FileSystem {...props} />}

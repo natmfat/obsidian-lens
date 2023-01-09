@@ -43,9 +43,10 @@ const useVault = (parent?: Folder, path?: string) => {
     useEffect(() => {
         const fetchFolderWrapper = async () => {
             const id = parent?.id || fileSystem.id;
+            clearFolder(id);
+
             const vault = await fetchFolder(path);
             if (!ignore) {
-                clearFolder(id);
                 addChildren(id, vault);
             }
         };
