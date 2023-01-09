@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.item {
+    @apply max-w-full overflow-x-hidden text-ellipsis flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors;
+}
