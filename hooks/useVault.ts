@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { Folder, File } from "./useStore.d";
 import useStore from "./useStore";
+import { getExtension } from "../lib/fileSystem";
 
-const cache: Record<string, Folder[]> = {};
-export const fetchFolder = async (path?: string): Promise<Folder[]> => {
+const fetchedBefore: string[] = [];
+export const fetchItem = async (path?: string) => {
+    path && fetchedBefore.push(path);
     const apiPath = `/api/vault${path ? `?path=${path}` : ""}`;
-    if (cache.hasOwnProperty(apiPath)) {
-        return cache[apiPath];
-    }
 
-    const json = await fetch(apiPath).then((res) => res.json());
+    const json = await fetch(apiPath)
+        .then((res) => res.json())
+        .catch(() => ({}));
 
-    if (json.fileSystem) {
-        const fileSystem = json.fileSystem.map((item: any) => {
+    const fs = json.fileSystem;
+    if (Array.isArray(fs)) {
+        return fs.map((item: any) => {
             const virtualItem = {
                 name: item.name,
                 path: item.path,
@@ -30,40 +32,54 @@ export const fetchFolder = async (path?: string): Promise<Folder[]> => {
             return {
                 ...virtualItem,
                 content: "",
+                ext: getExtension(item.name)!,
             } as File;
         });
-
-        cache[apiPath] = fileSystem;
-        return fileSystem;
+    } else if (fs.type === "file") {
+        return {
+            content: fs.content,
+            ext: getExtension(fs.name)!,
+        };
     }
 
     return [];
 };
 
-const useVault = (parent?: Folder, path?: string, open?: boolean) => {
+const useVault = (parent?: File | Folder, path?: string, open?: boolean) => {
     const [loading, setLoading] = useState(false);
-    const [fileSystem, clearFolder, addChildren] = useStore((state) => [
-        state.fileSystem,
-        state.clearFolder,
-        state.addChildren,
-    ]);
+    const [fileSystem, clearFolder, addChildren, setContent] = useStore(
+        (state) => [
+            state.fileSystem,
+            state.clearFolder,
+            state.addChildren,
+            state.setContent,
+        ]
+    );
 
     const id = parent?.id || fileSystem.id;
 
     useEffect(() => {
-        const fetchFolderWrapper = async () => {
+        const fetchItemWrapper = async () => {
+            if (path && fetchedBefore.includes(path)) {
+                return;
+            }
+
             clearFolder(id);
             setLoading(true);
-            const vault = await fetchFolder(path);
+            const vault = await fetchItem(path);
             setLoading(false);
 
             if (!ignore) {
-                addChildren(id, vault);
+                if (Array.isArray(vault)) {
+                    addChildren(id, vault);
+                } else if ("content" in vault) {
+                    setContent(id, vault.content, vault.ext);
+                }
             }
         };
 
         let ignore = false;
-        open && fetchFolderWrapper();
+        open && fetchItemWrapper();
         return () => {
             ignore = true;
         };

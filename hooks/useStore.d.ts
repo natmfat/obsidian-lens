@@ -6,13 +6,16 @@ export interface Store {
     clearFileSystem: () => void;
     clearFolder: (id: string) => void;
     addChildren: (parentId: string, items: Children) => void;
+    setContent: (id: string, content: string, ext?: string) => void;
 
-    activeFiles: id[];
-    setActive: (id: string) => void;
+    // simply save the file into memory
+    // this works because we don't care if the content is stale
+    activeFiles: File[];
+    setActive: (file: File) => void;
     removeActive: (id: string) => void;
 
-    focusedFileId: id | null;
-    setFocusedFileId: (id: string) => void;
+    focusedFile: string | null;
+    setFocusedFile: (id: string) => void;
 }
 
 interface VirtualItem {
@@ -30,4 +33,5 @@ export interface Folder extends VirtualItem {
 
 export interface File extends VirtualItem {
     content: string;
+    ext: string; // file extensions
 }

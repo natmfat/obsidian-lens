@@ -1,5 +1,10 @@
 import { Store, Folder } from "../hooks/useStore.d";
 
+export const formatName = (fileName: string) => fileName.replace(".md", "");
+
+export const getExtension = (fileName: string) =>
+    fileName.split(".").pop()?.toLowerCase();
+
 export const getItem = (
     parent: Folder,
     id: string

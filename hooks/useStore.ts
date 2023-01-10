@@ -39,26 +39,45 @@ const useStore = create(
                     parent.children = parent.children.concat(children);
                 }
             }),
-
-        activeFiles: [],
-        setActive: (id) => {
+        setContent: (id, content, ext) =>
             set((state) => {
                 const item = getItem(state.fileSystem, id);
-                item && state.activeFiles.push(id);
+                if (item && "content" in item) {
+                    item.content = content;
+                    if (ext) {
+                        item.ext = ext;
+                    }
+                }
+            }),
+
+        activeFiles: [],
+        setActive: (file) => {
+            set((state) => {
+                let found = false;
+                for (const activeFile of state.activeFiles) {
+                    if (activeFile.id === file.id) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    state.activeFiles.push(file);
+                }
             });
         },
         removeActive: (id) => {
             set((state) => {
                 state.activeFiles = state.activeFiles.filter(
-                    (activeId) => activeId !== id
+                    (activeFile) => activeFile.id !== id
                 );
             });
         },
 
-        focusedFileId: null,
-        setFocusedFileId: (id) =>
+        focusedFile: null,
+        setFocusedFile: (id) =>
             set((state) => {
-                state.focusedFileId = id;
+                state.focusedFile = id;
             }),
     }))
 );
