@@ -2,12 +2,17 @@ export interface Store {
     set: (fn: (state: Store) => void) => void;
 
     fileSystem: Folder;
-    activeFiles: File[];
-
     getItem: (id: string) => Folder | File | null;
     clearFileSystem: () => void;
     clearFolder: (id: string) => void;
     addChildren: (parentId: string, items: Children) => void;
+
+    activeFiles: id[];
+    setActive: (id: string) => void;
+    removeActive: (id: string) => void;
+
+    focusedFileId: id | null;
+    setFocusedFileId: (id: string) => void;
 }
 
 interface VirtualItem {

@@ -4,10 +4,10 @@
 
 /* File System */
 .item {
-    @apply flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors select-none;
+    @apply flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors select-none overflow-x-hidden;
 }
 
-.item > * {
+.item svg {
     @apply flex-shrink-0;
 }
 

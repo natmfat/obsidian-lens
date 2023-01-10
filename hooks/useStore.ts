@@ -18,13 +18,10 @@ const useStore = create(
             path: root,
             children: [],
         },
-        activeFiles: [],
-
         clearFileSystem: () =>
             set((state) => {
                 state.fileSystem.children = [];
             }),
-
         clearFolder: (id) =>
             set((state) => {
                 const item = getItem(state.fileSystem, id);
@@ -32,17 +29,36 @@ const useStore = create(
                     item.children = [];
                 }
             }),
-
         getItem: (id) => {
             return getItem(get().fileSystem, id);
         },
-
         addChildren: (parentId, children) =>
             set((state) => {
                 const parent = getItem(state.fileSystem, parentId);
                 if (parent && "children" in parent) {
                     parent.children = parent.children.concat(children);
                 }
+            }),
+
+        activeFiles: [],
+        setActive: (id) => {
+            set((state) => {
+                const item = getItem(state.fileSystem, id);
+                item && state.activeFiles.push(id);
+            });
+        },
+        removeActive: (id) => {
+            set((state) => {
+                state.activeFiles = state.activeFiles.filter(
+                    (activeId) => activeId !== id
+                );
+            });
+        },
+
+        focusedFileId: null,
+        setFocusedFileId: (id) =>
+            set((state) => {
+                state.focusedFileId = id;
             }),
     }))
 );
