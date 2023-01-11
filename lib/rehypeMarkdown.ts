@@ -1,9 +1,12 @@
 import { createElement, Fragment } from "react";
 import { unified } from "unified";
-import remarkHtml from "remark-html";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import rehypePrism from "rehype-prism";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import remarkMath from "remark-math";
+import rehypePrism from "rehype-prism-plus";
+import rehypeKatex from "rehype-katex";
 import rehypeReact from "rehype-react";
 
 import rehypeObsidian from "./rehypeObsidian";
@@ -14,10 +17,13 @@ const rehypeMarkdown = (markdown: string) => {
             // .use(html)
             // .use(prism)
             .use(remarkParse)
-            .use(remarkHtml)
+            .use(remarkBreaks)
+            .use(remarkGfm)
+            .use(remarkMath)
             .use(remarkRehype)
-            // .use(rehypeObsidian)
             .use(rehypePrism)
+            .use(rehypeObsidian)
+            .use(rehypeKatex)
             .use(rehypeReact, { createElement, Fragment })
             .processSync(markdown).result
     );

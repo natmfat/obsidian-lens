@@ -2,6 +2,22 @@ import type { Content, ElementContent, Root, RootContent } from "hast";
 import replaceToArray from "string-replace-to-array";
 import { map } from "unist-util-map";
 
+// TODO: custom components (tags, backlinks, images)
+/*
+images
+    unset(Slimdown::$rules['/\[([^\[]+)\]\(([^\)]+)\)/']);
+    Slimdown::add_rule('/!\[([^\[]+)\]\(([^\)]+)\)/', '<img src=\'\2\' alt=\'\1\'>');
+    Slimdown::add_rule('/\[([^\[]+)\]\(([^\)]+)\)/', '<a href=\'\2\'>\1</a>');
+
+backlinks
+    Slimdown::add_rule ('/\[\[(.*?)\]\]/e', 'mywiki_internal_link (\'\\1\')');
+
+tags
+    test
+*/
+
+const nodeWhitelist = ["th", "p"];
+
 const makeTransformer = () => {
     return (tree: Root) => {
         const mappedChilden = tree.children.map((child) =>
@@ -22,60 +38,13 @@ const makeTransformer = () => {
                             type: "text",
                             value: segment,
                         };
-                    } else if (segment.text) {
-                        if (segment.text.startsWith("[[")) {
-                            return {
-                                type: "element",
-                                tagName: "a",
-                                properties: {
-                                    href: segment.text,
-                                },
-                                children: [
-                                    {
-                                        type: "text",
-                                        value: segment.text,
-                                    },
-                                ],
-                            };
-                        }
-
-                        return {
-                            type: "element",
-                            tagName: "input",
-                            properties: {
-                                type: "checkbox",
-                                checked: segment.text.trim() === "[x]",
-                            },
-                            children: [],
-                        };
                     }
 
                     return {
                         type: "text",
-                        value: segment,
+                        value: "<<" + segment.text + ">>",
                     };
                 });
-
-                // const children = replaceToArray(node.value, regex, (text) => ({
-                //     emoji: text
-                //   })).map<ElementContent>((segment) =>
-                //     typeof segment === 'string'
-                //       ? {
-                //           type: 'text',
-                //           value: segment
-                //         } {
-                //           type: 'element',
-                //           tagName: 'img',
-                //           properties: {
-                //             className: [options.className],
-                //             draggable: 'false',
-                //             alt: segment.emoji,
-                //             decoding: 'async',
-                //             src: toUrl(segment.emoji, options)
-                //           },
-                //           children: []
-                //         }
-                //   );
 
                 const result: Content = {
                     type: "element",

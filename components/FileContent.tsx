@@ -37,14 +37,14 @@ const FileContent = ({ defaultFile }: FileContentProps) => {
     }, [defaultFile, focusedFile, fileSystem]);
 
     return (
-        <div className="h-screen w-full px-1 overflow-y-auto relative">
+        <div className="h-screen overflow-x-hidden overflow-y-auto relative">
             <ActiveFiles />
             {data ? (
-                <article className="mt-16 max-w-3xl mx-auto overflow-x-hidden">
+                <article className="mt-16 max-w-prose mx-auto overflow-x-hidden">
                     <h1 className="text-xl font-semibold mb-2">
                         {formatName(data.name)}
                     </h1>
-                    <div>
+                    <div className="prose prose-slate">
                         {rehypeMarkdown(
                             Buffer.from(data.content, "base64").toString()
                         )}

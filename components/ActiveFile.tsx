@@ -19,12 +19,14 @@ const ActiveFile = ({ id, name }: ActiveFileProps) => {
             onClick={() => {
                 setFocusedFile(id);
             }}
-            className="bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none"
+            className="bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none flex-shrink overflow-hidden justify-between"
         >
-            <span>{formatName(name)}</span>
+            <span className="whitespace-nowrap max-w-full overflow-x-hidden text-ellipsis">
+                {formatName(name)}
+            </span>
 
             <div
-                className="grid items-center"
+                className="grid items-center flex-shrink-0"
                 onClick={(e) => {
                     removeActive(id);
                     setFocusedFile(null);
