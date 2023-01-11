@@ -1,3 +1,5 @@
+// TODO: animate in an out, will likely need to take in a loading prop
+
 const LoadingIcon = () => {
     return (
         <svg

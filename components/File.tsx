@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useStore from "../hooks/useStore";
 import { File as FileProps } from "../hooks/useStore.d";
 import useVault from "../hooks/useVault";
@@ -6,19 +5,18 @@ import { formatName } from "../lib/fileSystem";
 import LoadingIcon from "./LoadingIcon";
 
 const File = (props: FileProps) => {
-    const [open, setOpen] = useState(false);
-    const [setActive, setFocusedFile] = useStore((state) => [
+    const [setActive, focusedFile, setFocusedFile] = useStore((state) => [
         state.setActive,
+        state.focusedFile,
         state.setFocusedFile,
     ]);
 
-    const { loading } = useVault(props, props.path, open);
+    const { loading } = useVault(props, props.path, focusedFile === props.id);
 
     return (
         <div
             className="item"
             onClick={() => {
-                setOpen(true);
                 setActive(props);
                 setFocusedFile(props.id);
             }}

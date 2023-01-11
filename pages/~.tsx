@@ -1,13 +1,13 @@
-import { GetServerSideProps } from "next";
-import { getCookie } from "cookies-next";
-import Root from "../components/Root";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Split from "react-split";
+
+import Root from "../components/Root";
 import FileSystemFull from "../components/FileSystemFull";
 import FileContent from "../components/FileContent";
 
-// props: InferGetServerSidePropsType<typeof getServerSideProps>
-
-export default function Dashboard() {
+export default function Dashboard({
+    path,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <Root>
             <Split
@@ -23,18 +23,10 @@ export default function Dashboard() {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    const accessToken = getCookie("access_token", { req, res });
-    if (!accessToken) {
-        return {
-            redirect: {
-                permanent: false,
-                destination: "/",
-            },
-        };
-    }
-
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     return {
-        props: {},
+        props: {
+            path: query.path || "",
+        },
     };
 };

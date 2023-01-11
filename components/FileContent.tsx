@@ -1,42 +1,51 @@
-import { IoClose } from "react-icons/io5";
-import useStore from "../hooks/useStore";
-import { File } from "../hooks/useStore.d";
-import { formatName, getItem } from "../lib/fileSystem";
-import markdownToReact from "../lib/markdownToReact";
-import markdownToHtml from "../lib/markdownToReact";
+import { useEffect, useState } from "react";
 
-const FileContent = () => {
-    const [fileSystem, activeFiles, focusedFile, setFocusedFile] = useStore(
+import type { File } from "../hooks/useStore.d";
+import useStore from "../hooks/useStore";
+import { formatName, getItem } from "../lib/fileSystem";
+import rehypeMarkdown from "../lib/rehypeMarkdown";
+import ActiveFiles from "./ActiveFiles";
+
+interface FileContentProps {
+    defaultFile?: string;
+}
+
+const FileContent = ({ defaultFile }: FileContentProps) => {
+    const [data, setData] = useState<File | null>(null);
+    const [fileSystem, setActive, focusedFile, setFocusedFile] = useStore(
         (state) => [
             state.fileSystem,
-            state.activeFiles,
+            state.setActive,
             state.focusedFile,
             state.setFocusedFile,
         ]
     );
 
-    const data = focusedFile && (getItem(fileSystem, focusedFile) as File);
-    // TODO: separate active top bar into separate component
+    useEffect(() => {
+        if (focusedFile) {
+            setData(getItem(fileSystem, focusedFile) as File);
+        } else if (defaultFile) {
+            const item = getItem(fileSystem, defaultFile) as File;
+            if (item) {
+                setData(item);
+                setActive(item);
+                setFocusedFile(item.id);
+            }
+        } else {
+            setData(null);
+        }
+    }, [defaultFile, focusedFile, fileSystem]);
+
     return (
-        <div className="h-screen w-full px-1 overflow-y-auto">
-            <div className="py-2 flex items-center gap-2">
-                {activeFiles.map((file) => (
-                    <div
-                        key={file.id}
-                        className="bg-slate-200 py-0.5 px-2 rounded-sm flex items-center gap-2 cursor-pointer select-none"
-                    >
-                        <span className="text-sm">{formatName(file.name)}</span>
-                        <IoClose className="text-md" />
-                    </div>
-                ))}
-            </div>
+        <div className="h-screen w-full px-1 overflow-y-auto relative">
+            <ActiveFiles />
             {data ? (
-                <article className="mt-10 max-w-3xl mx-auto overflow-x-hidden">
+                <article className="mt-16 max-w-3xl mx-auto overflow-x-hidden">
                     <h1 className="text-xl font-semibold mb-2">
                         {formatName(data.name)}
                     </h1>
-                    <div className="prose">
-                        {markdownToReact(
+                    <div>
+                        {rehypeMarkdown(
                             Buffer.from(data.content, "base64").toString()
                         )}
                     </div>
@@ -54,8 +63,3 @@ const FileContent = () => {
 };
 
 export default FileContent;
-
-// export default async function markdownToHtml(markdown) {
-//   const result = await remark().use(html).use(prism).process(markdown);
-//   return result.toString();
-// }

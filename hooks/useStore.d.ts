@@ -14,8 +14,8 @@ export interface Store {
     setActive: (file: File) => void;
     removeActive: (id: string) => void;
 
-    focusedFile: string | null;
-    setFocusedFile: (id: string) => void;
+    focusedFile: string | null | "none";
+    setFocusedFile: (id: string | null) => void;
 }
 
 interface VirtualItem {

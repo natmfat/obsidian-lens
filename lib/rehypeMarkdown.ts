@@ -6,7 +6,9 @@ import remarkRehype from "remark-rehype";
 import rehypePrism from "rehype-prism";
 import rehypeReact from "rehype-react";
 
-const markdownToReact = (markdown: string) => {
+import rehypeObsidian from "./rehypeObsidian";
+
+const rehypeMarkdown = (markdown: string) => {
     return (
         unified()
             // .use(html)
@@ -14,10 +16,11 @@ const markdownToReact = (markdown: string) => {
             .use(remarkParse)
             .use(remarkHtml)
             .use(remarkRehype)
+            // .use(rehypeObsidian)
             .use(rehypePrism)
             .use(rehypeReact, { createElement, Fragment })
             .processSync(markdown).result
     );
 };
 
-export default markdownToReact;
+export default rehypeMarkdown;
