@@ -8,18 +8,14 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const accessToken = getCookie("access_token", { req, res }) as string;
-    const path = req.query.path as string;
-    const raw = req.query.raw === "true"; // redirect to GitHub's download url
 
     try {
+        // warning: this method will take a long time to run
+        // it recursively fetches every tree in the repo
         const client = new GithubClient(accessToken);
-        const fileSystem = await client.fetchContent(path);
-
-        if (raw && fileSystem.download_url) {
-            return res.status(200).redirect(fileSystem.download_url);
-        }
-
-        res.status(200).json({ fileSystem });
+        res.status(200).json({
+            fileSystem: await client.fetchFileSystem(),
+        });
     } catch (e) {
         console.log(e);
         res.status(401).json({

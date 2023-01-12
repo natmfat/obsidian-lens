@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Obsidian Viewer
 
-## Getting Started
+A free, self-hosted option for your personal Obsidian vaults. Obsidian viewer will work with any Obsidian vault on GitHub (including privated vaults if you setup the permissions correctly).
 
-First, run the development server:
+## Configuration
 
-```bash
-npm run dev
-# or
-yarn dev
+Edit the following files to get started
+
+-   `vault.config.json`: Vault name & where it is located
+-   `.env.local`: Credentials (currently required)
+
+### Setting up Vault Config
+
+If you vault is currently located at `https://github.com/nathan-pham/obsidian-vault`, you would write
+
+```json
+{
+    "vaultName": "Programming Vault", // can be called anything
+    "vaultOwner": "nathan-pham", // your GitHub username
+    "vaultRepo": "obsidian-vault" // your GitHub repository path
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setting up GitHub Credentials
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+An example is provided in `.env.example`.  
+You could set the redirect URI to `http://localhost:3000/api/auth`, but recognize you will need to change it if you deploy Obsidian vault to the cloud.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```
+GITHUB_CLIENT_SECRET=<app secret>
+NEXT_PUBLIC_GITHUB_CLIENT_ID=<app client id>
+NEXT_PUBLIC_GITHUB_REDIRECT_URI=<redirect url>
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## API Methods
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Obsidian Viewer exposes a variety of routes to retrieve (not modify) files from your vault. They are briefly described below.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Screenshots
