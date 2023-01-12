@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import type { File } from "../hooks/useStore.d";
 import useStore from "../hooks/useStore";
-import { formatName, getItem } from "../lib/fileSystem";
-import rehypeMarkdown from "../lib/rehypeMarkdown";
+import { getItem } from "../lib/fileSystem";
 import ActiveFiles from "./ActiveFiles";
+import Viewer from "./viewers/Viewer";
 
 interface FileContentProps {
     defaultFile?: string;
@@ -37,22 +37,14 @@ const FileContent = ({ defaultFile }: FileContentProps) => {
     }, [defaultFile, focusedFile, fileSystem]);
 
     return (
-        <div className="h-screen overflow-x-hidden overflow-y-auto relative">
+        <div className="max-h-screen relative overflow-x-hidden overflow-y-auto">
             <ActiveFiles />
             {data ? (
-                <article className="mt-16 max-w-prose mx-auto overflow-x-hidden">
-                    <h1 className="text-xl font-semibold mb-2">
-                        {formatName(data.name)}
-                    </h1>
-                    <div className="prose prose-slate">
-                        {rehypeMarkdown(
-                            Buffer.from(data.content, "base64").toString()
-                        )}
-                    </div>
-                    <footer className="h-10"></footer>
+                <article className="h-screen inset-0 absolute mt-16">
+                    <Viewer data={data} />
                 </article>
             ) : (
-                <div className="h-full grid place-items-center">
+                <div className="h-screen inset-0 absolute grid place-items-center">
                     <h1 className="text-xl font-semibold mb-2 text-center">
                         No file is open
                     </h1>

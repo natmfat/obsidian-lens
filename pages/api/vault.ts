@@ -8,21 +8,33 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const accessToken = getCookie("access_token", { req, res }) as string;
-    if (!accessToken) {
-        res.status(200).redirect("/~");
-        return;
-    }
+    const path = req.query.path as string;
+    const full = req.query.full === "true";
+    const raw = req.query.raw === "true";
 
     try {
         const client = new GithubClient(accessToken);
-        const path = req.query.path as string;
+        if (full) {
+            res.status(200).json({
+                fileSystem: await client.fetchFileSystem(),
+            });
 
-        res.status(200).json({
-            fileSystem: await client.fetchContent(path),
-        });
+            return;
+        }
+
+        const fileSystem = await client.fetchContent(path);
+
+        if (raw && fileSystem.download_url) {
+            res.status(200).redirect(fileSystem.download_url);
+        } else {
+            res.status(200).json({
+                fileSystem,
+            });
+        }
     } catch (e) {
-        res.status(200).json({
-            error: "Could not retrieve vault. Try logging in again.",
+        console.log(e);
+        res.status(401).json({
+            message: "Could not retrieve vault. Try logging in again.",
         });
     }
 }

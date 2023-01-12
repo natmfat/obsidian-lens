@@ -2,22 +2,13 @@ import create from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { Store } from "./useStore.d";
-import { getItem } from "../lib/fileSystem";
-import vaultConfig from "../vault.config.json";
-
-const root = "root";
+import { createFileSystem, getItem } from "../lib/fileSystem";
 
 const useStore = create(
     immer<Store>((set, get) => ({
         set: (fn) => set(fn),
 
-        fileSystem: {
-            name: vaultConfig.vaultName,
-            url: root,
-            id: root,
-            path: root,
-            children: [],
-        },
+        fileSystem: createFileSystem(),
         clearFileSystem: () =>
             set((state) => {
                 state.fileSystem.children = [];
@@ -39,15 +30,10 @@ const useStore = create(
                     parent.children = parent.children.concat(children);
                 }
             }),
-        setContent: (id, content, ext) =>
+        updateItem: (id, partialItem) =>
             set((state) => {
                 const item = getItem(state.fileSystem, id);
-                if (item && "content" in item) {
-                    item.content = content;
-                    if (ext) {
-                        item.ext = ext;
-                    }
-                }
+                item && Object.assign(item, partialItem);
             }),
 
         activeFiles: [],

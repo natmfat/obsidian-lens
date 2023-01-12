@@ -6,10 +6,10 @@ export interface Store {
     clearFileSystem: () => void;
     clearFolder: (id: string) => void;
     addChildren: (parentId: string, items: Children) => void;
-    setContent: (id: string, content: string, ext?: string) => void;
+    updateItem: (id: string, data: Partial<File | Folder>) => void;
 
     // simply save the file into memory
-    // this works because we don't care if the content is stale
+    // this works because we don't care if the fetched data is stale
     activeFiles: File[];
     setActive: (file: File) => void;
     removeActive: (id: string) => void;
@@ -25,13 +25,11 @@ interface VirtualItem {
     id: string; // sha id
 }
 
-type Children = (Folder | File)[];
-
 export interface Folder extends VirtualItem {
-    children: Children;
+    children: (Folder | File)[];
 }
 
 export interface File extends VirtualItem {
-    content: string;
+    downloadUrl: string;
     ext: string; // file extensions
 }

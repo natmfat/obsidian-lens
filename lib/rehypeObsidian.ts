@@ -16,8 +16,6 @@ tags
     test
 */
 
-const nodeWhitelist = ["th", "p"];
-
 const makeTransformer = () => {
     return (tree: Root) => {
         const mappedChilden = tree.children.map((child) =>
@@ -29,9 +27,7 @@ const makeTransformer = () => {
                 const children = replaceToArray(
                     node.value,
                     /!?\[[^\]]*\]./,
-                    (text) => ({
-                        text,
-                    })
+                    (data) => ({ data })
                 ).map<ElementContent>((segment: any) => {
                     if (typeof segment === "string") {
                         return {
@@ -42,7 +38,7 @@ const makeTransformer = () => {
 
                     return {
                         type: "text",
-                        value: "<<" + segment.text + ">>",
+                        value: "<<" + segment.data + ">>",
                     };
                 });
 
