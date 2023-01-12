@@ -8,7 +8,7 @@ import LoadingIcon from "./LoadingIcon";
 
 const Folder = (props: FolderProps) => {
     const [open, setOpen] = useState(false);
-    const { loading } = useVault(props, props.path, open);
+    const { loading } = useVault(props, props.path, true);
 
     return (
         <>

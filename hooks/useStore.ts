@@ -1,8 +1,27 @@
 import create from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-import { Store } from "./useStore.d";
+import { Folder, Store } from "./useStore.d";
 import { createFileSystem, getItem } from "../lib/fileSystem";
+
+const updateItem = (
+    parent: Folder,
+    id: string,
+    partialItem: Partial<Folder | File>
+) => {
+    const item = getItem(parent, id);
+    if (!item) return;
+
+    if ("children" in partialItem && Array.isArray(partialItem.children)) {
+        const { children, ...restOfItem } = partialItem;
+        Object.assign(item, restOfItem);
+        for (const child of children) {
+            updateItem(parent, id, child);
+        }
+    } else {
+        Object.assign(item, partialItem);
+    }
+};
 
 const useStore = create(
     immer<Store>((set, get) => ({
@@ -33,7 +52,9 @@ const useStore = create(
         updateItem: (id, partialItem) =>
             set((state) => {
                 const item = getItem(state.fileSystem, id);
-                item && Object.assign(item, partialItem);
+                if (item) {
+                    Object.assign(item, partialItem);
+                }
             }),
 
         activeFiles: [],

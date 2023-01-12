@@ -12,12 +12,12 @@ import useStore from "../hooks/useStore";
 export default function Dashboard({
     fileSystem,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const set = useStore((state) => state.set);
-    useEffect(() => {
-        set((state) => {
-            state.fileSystem.children = fileSystem;
-        });
-    }, []);
+    // const set = useStore((state) => state.set);
+    // useEffect(() => {
+    //     set((state) => {
+    //         state.fileSystem.children = fileSystem;
+    //     });
+    // }, []);
 
     return (
         <Root>
@@ -35,21 +35,21 @@ export default function Dashboard({
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    try {
-        const accessToken = getCookie("access_token", { req, res }) as string;
-        const client = new GitHubClient(accessToken);
-        const fileSystem = await client.fetchFileSystem();
+    // try {
+    //     const accessToken = getCookie("access_token", { req, res }) as string;
+    //     const client = new GitHubClient(accessToken);
+    //     const fileSystem = await client.fetchFileSystem();
 
-        return {
-            props: {
-                fileSystem,
-            },
-        };
-    } catch (e) {
-        return {
-            props: {
-                fileSystem: {},
-            },
-        };
-    }
+    //     return {
+    //         props: {
+    //             fileSystem,
+    //         },
+    //     };
+    // } catch (e) {
+    return {
+        props: {
+            fileSystem: {},
+        },
+    };
+    // }
 };

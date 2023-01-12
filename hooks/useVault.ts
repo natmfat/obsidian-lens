@@ -53,7 +53,6 @@ const useVault = (parent?: File | Folder, path?: string, open?: boolean) => {
     const id = parent?.id || fileSystem.id;
 
     useEffect(() => {
-        return;
         const fetchItemWrapper = async () => {
             setLoading(true);
             const vault = await fetchItem(path);

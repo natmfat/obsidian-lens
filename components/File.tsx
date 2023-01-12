@@ -11,7 +11,7 @@ const File = (props: FileProps) => {
         state.setFocusedFile,
     ]);
 
-    const { loading } = useVault(props, props.path, focusedFile === props.id);
+    const { loading } = useVault(props, props.path, true);
 
     return (
         <div
