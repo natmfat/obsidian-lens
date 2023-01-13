@@ -56,6 +56,7 @@ export const getItemByPath = (parent: Folder, path: string) => {
     while (pathComponents.length && "children" in currentItem) {
         let currentPath = pathComponents.shift();
         let foundPath = false;
+
         for (const item of currentItem.children) {
             if (item.name === currentPath) {
                 // @ts-ignore

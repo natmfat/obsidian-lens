@@ -2,6 +2,11 @@ import type { File, Folder, VirtualItem } from "../hooks/useStore.d";
 import { createFileSystem, getExtension } from "./fileSystem";
 import vaultConfig from "../vault.config.json";
 
+interface AccessTokenJSON {
+    access_token: string;
+    expires_in: number;
+}
+
 export default class GithubClient {
     private accessToken: string;
     static config = vaultConfig;
@@ -12,6 +17,26 @@ export default class GithubClient {
      */
     constructor(accessToken: string) {
         this.accessToken = accessToken;
+    }
+
+    /**
+     * Get the access token for a user
+     * @param code Code returned from OAuth
+     * @returns Access token
+     */
+    static getAccessToken(code: string): Promise<AccessTokenJSON> {
+        return fetch("https://github.com/login/oauth/access_token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/vnd.github+json",
+            },
+            body: JSON.stringify({
+                client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
+                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                code: code,
+            }),
+        }).then((res) => res.json());
     }
 
     /**

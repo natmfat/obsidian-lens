@@ -2,35 +2,30 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 
+import GithubClient from "../../lib/GithubClient";
+import vaultConfig from "../../vault.config.json";
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const code = req.query.code;
+    const code = req.query.code as string;
     if (!code) {
         res.status(200).redirect("/~");
         return;
     }
 
-    const json = await fetch("https://github.com/login/oauth/access_token", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/vnd.github+json",
-        },
-        body: JSON.stringify({
-            client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-            client_secret: process.env.GITHUB_CLIENT_SECRET,
-            code: code,
-        }),
-    }).then((res) => res.json());
+    const json = await GithubClient.getAccessToken(code);
 
     if (json.access_token) {
-        setCookie("access_token", json.access_token, {
-            req,
-            res,
-            maxAge: json.expires_in,
-        });
+        const options = { req, res, maxAge: json.expires_in };
+        setCookie("access_token", json.access_token, options);
+
+        if (vaultConfig.logging) {
+            console.log(
+                `Your access token is ${json.access_token}\nCopy your access token and run cacheFileSystem.ts to optimize Obsidian Viewer (ideally every time your vault changes). Remember to turn off logging later.`
+            );
+        }
     }
 
     res.status(200).redirect("/~");

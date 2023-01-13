@@ -1,5 +1,6 @@
 {
     "vaultName": "Programming Resources",
     "vaultOwner": "nathan-pham",
-    "vaultRepo": "programming-resources"
+    "vaultRepo": "programming-resources",
+    "logging": true
 }

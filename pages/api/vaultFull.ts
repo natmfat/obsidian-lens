@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getCookie } from "cookies-next";
 
 import GithubClient from "../../lib/GithubClient";
-import * as fs from "fs";
-import { createFileSystem } from "../../lib/fileSystem";
 
 export default async function handler(
     req: NextApiRequest,
@@ -16,14 +14,6 @@ export default async function handler(
         // it recursively fetches every tree in the repo
         const client = new GithubClient(accessToken);
         const children = await client.fetchFileSystem();
-
-        fs.writeFileSync(
-            "./fileSystem.json",
-            JSON.stringify({
-                ...createFileSystem(),
-                children,
-            })
-        );
 
         res.status(200).json({
             fileSystem: children,
