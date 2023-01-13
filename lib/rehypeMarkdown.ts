@@ -26,8 +26,6 @@ const rehypeMarkdown = (markdown: string, fileSystem: Folder) => {
             .use(remarkLinks, {
                 pageResolver: (path: string) => [path],
                 hrefTemplate: (path: string) => {
-                    // return `/api/vault?path=/assets/${path}&raw=true`;
-                    console.log(path);
                     if (!path.includes(".")) {
                         path += ".md";
                     }
@@ -35,8 +33,6 @@ const rehypeMarkdown = (markdown: string, fileSystem: Folder) => {
                     const item =
                         getItem(fileSystem, path, "name") ||
                         getItemByPath(fileSystem, path);
-
-                    console.log(item);
 
                     if (item && "downloadUrl" in item) {
                         return item.downloadUrl;

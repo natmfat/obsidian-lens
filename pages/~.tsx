@@ -1,23 +1,17 @@
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useEffect } from "react";
 import Split from "react-split";
 
 import Root from "../components/Root";
 import FileSystemFull from "../components/FileSystemFull";
 import FileContent from "../components/FileContent";
-import { getCookie } from "cookies-next";
-import GitHubClient from "../lib/GithubClient";
-import useStore from "../hooks/useStore";
+import useKeyboard from "../hooks/useKeyboard";
 
-export default function Dashboard({
-    fileSystem,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    // const set = useStore((state) => state.set);
-    // useEffect(() => {
-    //     set((state) => {
-    //         state.fileSystem.children = fileSystem;
-    //     });
-    // }, []);
+// TODO:
+// Ctrl + file click = new item
+// Click in left = change focused item, replace active with new item
+// Ctrl + w = remove focused active item
+
+export default function Dashboard() {
+    useKeyboard();
 
     return (
         <Root>
@@ -33,23 +27,3 @@ export default function Dashboard({
         </Root>
     );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    // try {
-    //     const accessToken = getCookie("access_token", { req, res }) as string;
-    //     const client = new GitHubClient(accessToken);
-    //     const fileSystem = await client.fetchFileSystem();
-
-    //     return {
-    //         props: {
-    //             fileSystem,
-    //         },
-    //     };
-    // } catch (e) {
-    return {
-        props: {
-            fileSystem: {},
-        },
-    };
-    // }
-};

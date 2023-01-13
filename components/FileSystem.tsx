@@ -6,6 +6,7 @@ const FileSystem = (props: Store["fileSystem"]) => {
     return (
         <>
             {[...props.children]
+                .filter((item) => !item.name.startsWith("."))
                 .sort((itemA, itemB) => itemA.name.localeCompare(itemB.name))
                 .sort((itemA, itemB) =>
                     "children" in itemA && !("children" in itemB) ? -1 : 0

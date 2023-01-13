@@ -3,13 +3,15 @@ import { formatName } from "../../lib/fileSystem";
 import rehypeMarkdown from "../../lib/rehypeMarkdown";
 import { useEffect, useState } from "react";
 import useStore from "../../hooks/useStore";
+import SkeletonItem from "../SkeletonItem";
 
 const ViewerText = ({ data }: ViewerProps) => {
-    const [markdown, setMarkdown] = useState<string>();
+    const [markdown, setMarkdown] = useState<string | null>();
     const fileSystem = useStore((state) => state.fileSystem);
 
     useEffect(() => {
-        data.downloadUrl &&
+        if (data.downloadUrl) {
+            setMarkdown(null);
             fetch(data.downloadUrl)
                 .then((res) => {
                     if (res.status === 404) {
@@ -19,6 +21,7 @@ const ViewerText = ({ data }: ViewerProps) => {
                     return res.text();
                 })
                 .then(setMarkdown);
+        }
     }, [data.downloadUrl]);
 
     return (
@@ -27,7 +30,11 @@ const ViewerText = ({ data }: ViewerProps) => {
                 {formatName(data.name)}
             </h1>
             <div className="prose prose-slate">
-                {markdown && rehypeMarkdown(markdown, fileSystem)}
+                {markdown ? (
+                    rehypeMarkdown(markdown, fileSystem)
+                ) : (
+                    <SkeletonItem />
+                )}
             </div>
         </article>
     );

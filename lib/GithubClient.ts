@@ -83,6 +83,7 @@ export default class GithubClient {
             return tree;
         };
 
+        // every time we complete this operation, save it to the cache automagically
         return fetchSubTree(createFileSystem(), await this.fetchTreeUrl());
     }
 
