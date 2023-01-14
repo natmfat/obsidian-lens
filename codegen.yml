@@ -1,0 +1,24 @@
+schema: http://localhost:3000/api/graphql
+# documents: components/**/*.graphql
+# "@graphql-codegen/cli": "^2.13.3",
+#     "@graphql-codegen/client-preset": "^1.0.2",
+#     "@graphql-codegen/typescript": "^2.7.3",
+#     "@graphql-codegen/typescript-operations": "^2.5.3",
+#     "@graphql-codegen/typescript-resolvers": "^2.7.3",
+#     "@graphql-codegen/typescript-urql": "^3.7.0"
+generates:
+    ./schema/index.ts:
+        plugins:
+            - typescript
+            - typescript-resolvers
+            - typescript-operations
+        config:
+            fetcher: urql
+    ./schemaClient/index.ts:
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-urql
+        config:
+            withHooks: true
+            withComponent: false

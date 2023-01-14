@@ -1,12 +1,11 @@
 import type { Store, Folder, VirtualItem } from "../hooks/useStore.d";
-import vaultConfig from "../vault.config.json";
 
 /**
  * Create an empty file system (basically a folder without a parent)
  * @returns Empty file system
  */
 export const createFileSystem = (): Folder => ({
-    name: vaultConfig.vaultName,
+    name: "Unnamed Vault",
     path: "",
     url: "",
     id: "",

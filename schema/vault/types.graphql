@@ -1,0 +1,15 @@
+type Vault {
+    owner: String!
+    repo: String!
+    name: String!
+    paths: [String]!
+}
+
+extend type Query {
+    getVault: Vault!
+}
+
+extend type Mutation {
+    updateVault(owner: String!, repo: String!, name: String!): Vault!
+    updateVaultPaths: Vault!
+}

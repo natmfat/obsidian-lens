@@ -11,7 +11,8 @@ import useKeyboard from "../hooks/useKeyboard";
 // Ctrl + w = remove focused active item
 
 export default function Dashboard() {
-    useKeyboard();
+    // useKeyboard();
+    // TODO: keyboard shortcuts
 
     return (
         <Root>

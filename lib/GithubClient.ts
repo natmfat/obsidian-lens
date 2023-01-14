@@ -1,22 +1,37 @@
 import type { File, Folder, VirtualItem } from "../hooks/useStore.d";
 import { createFileSystem, getExtension } from "./fileSystem";
-import vaultConfig from "../vault.config.json";
+import { Vault } from "../schema";
 
-interface AccessTokenJSON {
+// OAuth response data
+export interface AccessTokenJSON {
     access_token: string;
     expires_in: number;
 }
 
+export const defaultVault: Partial<Vault> = {
+    owner: "nathan-pham",
+    repo: "programming-resources",
+    name: "Programming Resources",
+    paths: [],
+};
+
 export default class GithubClient {
     private accessToken: string;
-    static config = vaultConfig;
+    private vaultOwner: string;
+    private vaultRepo: string;
 
     /**
      * Create a new client to interact with the GitHub API
      * @param accessToken Access token from Github OAuth
      */
-    constructor(accessToken: string) {
+    constructor(
+        accessToken: string,
+        vaultOwner?: string | null,
+        vaultRepo?: string | null
+    ) {
         this.accessToken = accessToken;
+        this.vaultOwner = vaultOwner || defaultVault.owner!;
+        this.vaultRepo = vaultRepo || defaultVault.repo!;
     }
 
     /**
@@ -89,9 +104,10 @@ export default class GithubClient {
 
     /**
      * Recursively retrieves all of the files in the repository
+     * Compatible with frontend types but extremely slow
      * @returns Entire file system
      */
-    async fetchFileSystem() {
+    async fetchFileSystemClient() {
         const fetchSubTree = async (parent: Folder, path: string) => {
             const tree = GithubClient.parseTreeItems(
                 (await this.fetch(path, true)).tree,
@@ -110,6 +126,35 @@ export default class GithubClient {
 
         // every time we complete this operation, save it to the cache automagically
         return fetchSubTree(createFileSystem(), await this.fetchTreeUrl());
+    }
+
+    /**
+     * Builds a list of all of the items in a given repository
+     * Part of migration to Redis
+     * @returns
+     */
+    async fetchFileSystem() {
+        const children: string[] = [];
+
+        const fetchSubTree = async (parentPath: string, path: string) => {
+            const tree = (await this.fetch(path, true)).tree as Record<
+                string,
+                string
+            >[];
+
+            for (const item of tree) {
+                const path = `${parentPath}/${item.path}`;
+                if (!item.path.startsWith(".")) {
+                    children.push(path);
+                    if (item.type === "tree") {
+                        await fetchSubTree(path, item.url);
+                    }
+                }
+            }
+        };
+
+        await fetchSubTree("", await this.fetchTreeUrl());
+        return children;
     }
 
     /**
@@ -147,7 +192,7 @@ export default class GithubClient {
      */
     get api() {
         const baseUrl = "https://api.github.com/repos";
-        return `${baseUrl}/${vaultConfig.vaultOwner}/${vaultConfig.vaultRepo}`;
+        return `${baseUrl}/${this.vaultOwner}/${this.vaultRepo}`;
     }
 
     /**
