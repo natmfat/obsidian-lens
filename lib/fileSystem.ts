@@ -1,16 +1,17 @@
-import type { Store, Folder, VirtualItem } from "../hooks/useStore.d";
+import type { Store, Item } from "../hooks/useStore.d";
 
 /**
  * Create an empty file system (basically a folder without a parent)
  * @returns Empty file system
  */
-export const createFileSystem = (): Folder => ({
+export const createFileSystem = (): Item => ({
     name: "Unnamed Vault",
-    path: "",
-    url: "",
-    id: "",
+    path: "/",
     children: [],
 });
+
+export const getContent = (path: string) =>
+    `/api/vault?path=${encodeURIComponent(path)}&raw=true`;
 
 /**
  * Format the name of a file
@@ -45,14 +46,14 @@ export const getExtension = (fileName: string) =>
  * @param path Path of the item you want to find
  * @returns The item, if found
  */
-export const getItemByPath = (parent: Folder, path: string) => {
+export const getItemByPath = (parent: Item, path: string) => {
     const pathComponents = path
         .split("/")
         .map((t) => t.trim())
         .filter((t) => t.length);
 
-    let currentItem: Folder | File = parent;
-    while (pathComponents.length && "children" in currentItem) {
+    let currentItem: Item = parent;
+    while (pathComponents.length && currentItem.children) {
         let currentPath = pathComponents.shift();
         let foundPath = false;
 
@@ -73,27 +74,29 @@ export const getItemByPath = (parent: Folder, path: string) => {
 };
 
 /**
- * Get an item by a certain field (defaults to id)
+ * Get an item by a certain field (defaults to path)
  * Uses recursion
  * @param parent File system
- * @param id Internal property of a file you want to find (like the file's id)
- * @param field Internal value of a file you want to target (like "id")
+ * @param path Internal property of a file you want to find (like the file's path)
+ * @param field Internal value of a file you want to target (like "path")
  * @returns The item, if found
  */
 export const getItem = (
-    parent: Folder,
-    id: string,
-    field?: keyof VirtualItem
+    parent: Item,
+    path: string,
+    field?: keyof Item
 ): ReturnType<Store["getItem"]> => {
-    if (parent.id === id) {
+    if (parent.path === path) {
         return parent;
     }
 
+    if (!parent.children) return null;
+
     for (const child of parent.children) {
-        if (child[field || "id"] === id) {
+        if (child[field || "path"] === path) {
             return child;
         } else if ("children" in child) {
-            const item = getItem(child, id, field);
+            const item = getItem(child, path, field);
             if (item) {
                 return item;
             }
@@ -101,4 +104,43 @@ export const getItem = (
     }
 
     return null;
+};
+
+/**
+ * Build a client compatible file system
+ * @param paths Flattened list of paths
+ * @returns Entire Obsidian vault file system
+ */
+export const buildFileSystem = (paths: string[]): Item => {
+    const isFile = (path: string) => path.split(".").length > 1;
+    const cache: Record<string, any> = { children: [] };
+    for (const path of paths) {
+        const components = path
+            .split("/")
+            .map((p) => p.trim())
+            .filter((p) => p.length);
+
+        components.reduce((acc: Record<string, any>, name: string) => {
+            if (!acc.hasOwnProperty(name)) {
+                acc[name] = { children: [] };
+
+                const item = { name, path } as Item;
+                acc.children.push(
+                    isFile(name)
+                        ? item
+                        : {
+                              ...item,
+                              children: acc[name].children,
+                          }
+                );
+            }
+
+            return acc[name];
+        }, cache);
+    }
+
+    return {
+        ...createFileSystem(),
+        children: cache.children,
+    };
 };

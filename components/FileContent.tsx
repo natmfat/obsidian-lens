@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { File } from "../hooks/useStore.d";
+import type { Item } from "../hooks/useStore.d";
 import useStore from "../hooks/useStore";
 import { getItem } from "../lib/fileSystem";
 import ActiveFiles from "./ActiveFiles";
@@ -11,7 +11,7 @@ interface FileContentProps {
 }
 
 const FileContent = ({ defaultFile }: FileContentProps) => {
-    const [data, setData] = useState<File | null>(null);
+    const [data, setData] = useState<Item | null>(null);
     const [fileSystem, setActive, focusedFile, setFocusedFile] = useStore(
         (state) => [
             state.fileSystem,
@@ -23,13 +23,13 @@ const FileContent = ({ defaultFile }: FileContentProps) => {
 
     useEffect(() => {
         if (focusedFile) {
-            setData(getItem(fileSystem, focusedFile) as File);
+            setData(getItem(fileSystem, focusedFile) as Item);
         } else if (defaultFile) {
-            const item = getItem(fileSystem, defaultFile) as File;
+            const item = getItem(fileSystem, defaultFile) as Item;
             if (item) {
                 setData(item);
                 setActive(item);
-                setFocusedFile(item.id);
+                setFocusedFile(item.path);
             }
         } else {
             setData(null);

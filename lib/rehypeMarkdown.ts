@@ -12,10 +12,10 @@ import rehypeKatex from "rehype-katex";
 import rehypeReact from "rehype-react";
 
 import rehypeObsidian from "./rehypeObsidian";
-import type { Folder } from "../hooks/useStore.d";
-import { getItem, getItemByPath } from "./fileSystem";
+import { getContent, getItem, getItemByPath } from "./fileSystem";
+import type { Item } from "../hooks/useStore.d";
 
-const rehypeMarkdown = (markdown: string, fileSystem: Folder) => {
+const rehypeMarkdown = (markdown: string, fileSystem: Item) => {
     return (
         unified()
             .use(remarkParse)
@@ -34,9 +34,13 @@ const rehypeMarkdown = (markdown: string, fileSystem: Folder) => {
                         getItem(fileSystem, path, "name") ||
                         getItemByPath(fileSystem, path);
 
-                    if (item && "downloadUrl" in item) {
-                        return item.downloadUrl;
+                    if (item) {
+                        return getContent(item.path);
                     }
+
+                    // if (item && "downloadUrl" in item) {
+                    //     return item.downloadUrl;
+                    // }
 
                     return path;
                 },

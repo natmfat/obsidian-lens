@@ -5,12 +5,12 @@ import useStore from "../hooks/useStore";
 import { formatName } from "../lib/fileSystem";
 
 interface ActiveFileProps {
-    id: string;
+    path: string;
     name: string;
     selected?: boolean;
 }
 
-const ActiveFile = ({ id, name, selected }: ActiveFileProps) => {
+const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
     const [removeActive, setFocusedFile] = useStore((state) => [
         state.removeActive,
         state.setFocusedFile,
@@ -19,7 +19,7 @@ const ActiveFile = ({ id, name, selected }: ActiveFileProps) => {
     return (
         <div
             onClick={() => {
-                setFocusedFile(id);
+                setFocusedFile(path);
             }}
             className={twMerge(
                 "bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none flex-shrink overflow-hidden justify-between border",
@@ -33,7 +33,7 @@ const ActiveFile = ({ id, name, selected }: ActiveFileProps) => {
             <div
                 className="grid items-center flex-shrink-0"
                 onClick={(e) => {
-                    removeActive(id);
+                    removeActive(path);
                     setFocusedFile(null);
                     e.stopPropagation();
                     e.preventDefault();

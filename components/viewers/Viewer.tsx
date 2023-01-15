@@ -1,22 +1,21 @@
-import type { File } from "../../hooks/useStore.d";
-import { isNameImage } from "../../lib/fileSystem";
+import type { Item } from "../../hooks/useStore.d";
+import { getExtension, isNameImage } from "../../lib/fileSystem";
 import ViewerImage from "./ViewerImage";
 import ViewerText from "./ViewerText";
 
 export interface ViewerProps {
-    data: File;
+    data: Item;
 }
 
 const Viewer = ({ data }: ViewerProps) => {
+    const ext = getExtension(data.name);
     if (isNameImage(data.name)) {
         return <ViewerImage data={data} />;
-    } else if (data.ext === "md") {
+    } else if (ext === "md") {
         return <ViewerText data={data} />;
     }
 
-    return (
-        <p className="text-red-500">File of type {data.ext} not supported</p>
-    );
+    return <p className="text-red-500">File of type {ext} not supported</p>;
 };
 
 export default Viewer;

@@ -24,12 +24,12 @@ const useKeyboard = () => {
                     const newFocus =
                         activeFiles[
                             activeFiles.findIndex(
-                                (file) => file.id === focusedFile
+                                (file) => file.path === focusedFile
                             ) - 1
                         ];
 
                     console.log(newFocus);
-                    setFocusedFile(newFocus?.id || null);
+                    setFocusedFile(newFocus?.path || null);
                 }
             }
         };

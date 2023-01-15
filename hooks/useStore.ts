@@ -1,27 +1,8 @@
 import create from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-import { Folder, Store } from "./useStore.d";
+import { Store } from "./useStore.d";
 import { createFileSystem, getItem } from "../lib/fileSystem";
-
-const updateItem = (
-    parent: Folder,
-    id: string,
-    partialItem: Partial<Folder | File>
-) => {
-    const item = getItem(parent, id);
-    if (!item) return;
-
-    if ("children" in partialItem && Array.isArray(partialItem.children)) {
-        const { children, ...restOfItem } = partialItem;
-        Object.assign(item, restOfItem);
-        for (const child of children) {
-            updateItem(parent, id, child);
-        }
-    } else {
-        Object.assign(item, partialItem);
-    }
-};
 
 const useStore = create(
     immer<Store>((set, get) => ({
@@ -32,20 +13,21 @@ const useStore = create(
             set((state) => {
                 state.fileSystem.children = [];
             }),
-        clearFolder: (id) =>
+        getItem: (path) => {
+            return getItem(get().fileSystem, path);
+        },
+        clearItem: (path) =>
             set((state) => {
-                const item = getItem(state.fileSystem, id);
+                const item = getItem(state.fileSystem, path);
                 if (item && "children" in item) {
                     item.children = [];
                 }
             }),
-        getItem: (id) => {
-            return getItem(get().fileSystem, id);
-        },
-        addChildren: (parentId, children) =>
+
+        addChildren: (parentPath, children) =>
             set((state) => {
-                const parent = getItem(state.fileSystem, parentId);
-                if (parent && "children" in parent) {
+                const parent = getItem(state.fileSystem, parentPath);
+                if (parent && parent.children) {
                     parent.children = parent.children.concat(children);
                 }
             }),
@@ -62,7 +44,7 @@ const useStore = create(
             set((state) => {
                 let found = false;
                 for (const activeFile of state.activeFiles) {
-                    if (activeFile.id === file.id) {
+                    if (activeFile.path === file.path) {
                         found = true;
                         break;
                     }
@@ -73,18 +55,18 @@ const useStore = create(
                 }
             });
         },
-        removeActive: (id) => {
+        removeActive: (path) => {
             set((state) => {
                 state.activeFiles = state.activeFiles.filter(
-                    (activeFile) => activeFile.id !== id
+                    (activeFile) => activeFile.path !== path
                 );
             });
         },
 
         focusedFile: null,
-        setFocusedFile: (id) =>
+        setFocusedFile: (path) =>
             set((state) => {
-                state.focusedFile = id;
+                state.focusedFile = path;
             }),
     }))
 );

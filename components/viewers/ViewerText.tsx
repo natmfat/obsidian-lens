@@ -1,5 +1,5 @@
 import type { ViewerProps } from "./Viewer";
-import { formatName } from "../../lib/fileSystem";
+import { formatName, getContent } from "../../lib/fileSystem";
 import rehypeMarkdown from "../../lib/rehypeMarkdown";
 import { useEffect, useState } from "react";
 import useStore from "../../hooks/useStore";
@@ -10,19 +10,18 @@ const ViewerText = ({ data }: ViewerProps) => {
     const fileSystem = useStore((state) => state.fileSystem);
 
     useEffect(() => {
-        if (data.downloadUrl) {
-            setMarkdown(null);
-            fetch(data.downloadUrl)
-                .then((res) => {
-                    if (res.status === 404) {
-                        return "";
-                    }
+        console.log(getContent(data.path));
+        setMarkdown(null);
+        fetch(getContent(data.path))
+            .then((res) => {
+                if (res.status === 404) {
+                    return "";
+                }
 
-                    return res.text();
-                })
-                .then(setMarkdown);
-        }
-    }, [data.downloadUrl]);
+                return res.text();
+            })
+            .then(setMarkdown);
+    }, [data.path]);
 
     return (
         <article className="max-w-prose mx-auto overflow-x-hidden pb-10">

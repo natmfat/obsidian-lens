@@ -1,9 +1,9 @@
-import useVault from "../hooks/useVault";
 import FileSystem from "../components/FileSystem";
+import useStore from "../hooks/useStore";
 import LoadingIcon from "./LoadingIcon";
 
 const FileSystemFull = () => {
-    const { fileSystem, loading } = useVault(undefined, undefined, true);
+    const fileSystem = useStore((state) => state.fileSystem);
 
     return (
         <aside className="p-4 bg-slate-200 h-screen w-fit overflow-y-auto">
@@ -11,7 +11,6 @@ const FileSystemFull = () => {
                 <span className="uppercase font-semibold text-sm whitespace-nowrap overflow-x-hidden text-ellipsis mr-2">
                     {fileSystem.name}
                 </span>
-                {loading && <LoadingIcon />}
             </h1>
             <FileSystem {...fileSystem} />
         </aside>

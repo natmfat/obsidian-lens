@@ -1,5 +1,3 @@
-import type { File, Folder, VirtualItem } from "../hooks/useStore.d";
-import { createFileSystem, getExtension } from "./fileSystem";
 import { Vault } from "../schema";
 
 // OAuth response data
@@ -66,66 +64,6 @@ export default class GithubClient {
             method: "GET",
             headers: this.headers,
         }).then((res) => res.json());
-    }
-
-    /**
-     * Converts data fetched from GitHub into the Obsidian Viewer file system format
-     * Intended to be used in another recursive method
-     * @param items Data from GitHub
-     * @param parent Parent path
-     * @returns List of Obsidian Viewer compatible folders & files
-     */
-    private static parseTreeItems(
-        items: Record<string, string>[],
-        parent: string = ""
-    ): (Folder | File)[] {
-        return items.map((item) => {
-            const virtualItem: VirtualItem = {
-                name: item.path.split("/").pop() || item.path,
-                url: item.url,
-                id: item.sha,
-                path: `${parent}/${item.path}`,
-            };
-
-            if (item.type === "blob") {
-                return {
-                    ...virtualItem,
-                    ext: getExtension(item.path),
-                    downloadUrl: `/api/vault?path=${virtualItem.path}&raw=true`,
-                } as File;
-            }
-
-            return {
-                ...virtualItem,
-                children: [],
-            } as Folder;
-        });
-    }
-
-    /**
-     * Recursively retrieves all of the files in the repository
-     * Compatible with frontend types but extremely slow
-     * @returns Entire file system
-     */
-    async fetchFileSystemClient() {
-        const fetchSubTree = async (parent: Folder, path: string) => {
-            const tree = GithubClient.parseTreeItems(
-                (await this.fetch(path, true)).tree,
-                parent.path
-            );
-
-            for (const child of tree) {
-                parent.children.push(child);
-                if ("children" in child) {
-                    await fetchSubTree(child, child.url);
-                }
-            }
-
-            return tree;
-        };
-
-        // every time we complete this operation, save it to the cache automagically
-        return fetchSubTree(createFileSystem(), await this.fetchTreeUrl());
     }
 
     /**

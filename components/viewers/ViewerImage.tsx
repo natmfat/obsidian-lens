@@ -1,7 +1,8 @@
+import { getContent } from "../../lib/fileSystem";
 import type { ViewerProps } from "./Viewer";
 
 const ViewerImage = ({ data }: ViewerProps) => {
-    return <img src={data.downloadUrl} className="max-w-full mx-auto" />;
+    return <img src={getContent(data.path)} className="max-w-full mx-auto" />;
 };
 
 export default ViewerImage;

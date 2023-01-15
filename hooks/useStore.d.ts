@@ -1,35 +1,25 @@
 export interface Store {
     set: (fn: (state: Store) => void) => void;
 
-    fileSystem: Folder;
-    getItem: (id: string) => Folder | File | null;
+    fileSystem: Item;
+    getItem: (path: string) => Item | null;
     clearFileSystem: () => void;
-    clearFolder: (id: string) => void;
-    addChildren: (parentId: string, items: Children) => void;
-    updateItem: (id: string, data: Partial<File | Folder>) => void;
+    clearItem: (path: string) => void;
+    addChildren: (path: string, items: Item[]) => void;
+    updateItem: (path: string, data: Partial<Item>) => void;
 
     // simply save the file into memory
     // this works because we don't care if the fetched data is stale
-    activeFiles: File[];
-    setActive: (file: File) => void;
-    removeActive: (id: string) => void;
+    activeFiles: Item[];
+    setActive: (file: Item) => void;
+    removeActive: (path: string) => void;
 
     focusedFile: string | null | "none";
-    setFocusedFile: (id: string | null) => void;
+    setFocusedFile: (path: string | null) => void;
 }
 
-interface VirtualItem {
+export interface Item {
     name: string;
     path: string;
-    url: string; // git url to retrieve
-    id: string; // sha id
-}
-
-export interface Folder extends VirtualItem {
-    children: (Folder | File)[];
-}
-
-export interface File extends VirtualItem {
-    downloadUrl: string;
-    ext: string; // file extensions
+    children?: Item[];
 }
