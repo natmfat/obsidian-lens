@@ -44,7 +44,7 @@ const FileContent = ({ defaultFile }: FileContentProps) => {
                     <Viewer data={data} />
                 </article>
             ) : (
-                <div className="h-screen inset-0 absolute grid place-items-center">
+                <div className="absolute inset-0 grid place-items-center">
                     <h1 className="text-xl font-semibold mb-2 text-center">
                         No file is open
                     </h1>

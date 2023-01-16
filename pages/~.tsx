@@ -3,12 +3,13 @@ import Split from "react-split";
 import Root from "../components/Root";
 import FileSystemFull from "../components/FileSystemFull";
 import FileContent from "../components/FileContent";
-import useKeyboard from "../hooks/useKeyboard";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import VaultModel from "../schema/vault/model";
 import { useEffect } from "react";
-import useStore from "../hooks/useStore";
+import useStore, { registerFileSystem } from "../hooks/useStore";
 import { buildFileSystem } from "../lib/fileSystem";
+import Apps from "../components/Apps";
+import { registerKeyboard } from "../hooks/useKeyboard";
 
 // TODO:
 // Ctrl + file click = new item
@@ -19,14 +20,8 @@ export default function Dashboard({
     name,
     paths,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const set = useStore((state) => state.set);
-    useEffect(() => {
-        set((state) => {
-            state.fileSystem = buildFileSystem(paths);
-            state.fileSystem.name = name;
-            state.fileSystemPaths = paths;
-        });
-    }, []);
+    registerFileSystem(name, paths);
+    registerKeyboard();
 
     return (
         <Root>
@@ -39,6 +34,8 @@ export default function Dashboard({
                 <FileSystemFull />
                 <FileContent />
             </Split>
+
+            <Apps />
         </Root>
     );
 }

@@ -12,6 +12,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeReact from "rehype-react";
 
 import { getContent, getItemPathFlat } from "./fileSystem";
+import FileContentLink from "../components/FileContentLink";
 
 const rehypeMarkdown = (markdown: string, fileSystemPaths: string[]) => {
     return (
@@ -33,7 +34,13 @@ const rehypeMarkdown = (markdown: string, fileSystemPaths: string[]) => {
             .use(rehypePrism)
             // .use(rehypeObsidian)
             .use(rehypeKatex)
-            .use(rehypeReact, { createElement, Fragment })
+            .use(rehypeReact, {
+                createElement,
+                Fragment,
+                components: {
+                    a: FileContentLink,
+                },
+            })
             .processSync(markdown).result
     );
 };

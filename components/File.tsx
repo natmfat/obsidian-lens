@@ -1,7 +1,6 @@
 import useStore from "../hooks/useStore";
 import { Item } from "../hooks/useStore.d";
 import { formatName } from "../lib/fileSystem";
-import LoadingIcon from "./LoadingIcon";
 
 const File = (props: Item) => {
     const [setActive, focusedFile, setFocusedFile] = useStore((state) => [
@@ -19,7 +18,6 @@ const File = (props: Item) => {
             }}
         >
             <span>{formatName(props.name)}</span>
-            {/* {loading && <LoadingIcon />} */}
         </div>
     );
 };

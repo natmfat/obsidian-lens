@@ -4,37 +4,30 @@ import rehypeMarkdown from "../../lib/rehypeMarkdown";
 import { useEffect, useState } from "react";
 import useStore from "../../hooks/useStore";
 import SkeletonItem from "../SkeletonItem";
+import useFileContent from "../../hooks/useFileContent";
+
+export const ViewerTextPreview = ({ content }: { content: string | null }) => {
+    const fileSystemPaths = useStore((state) => state.fileSystemPaths);
+    return (
+        <div className="prose prose-slate">
+            {content ? (
+                rehypeMarkdown(content, fileSystemPaths)
+            ) : (
+                <SkeletonItem />
+            )}
+        </div>
+    );
+};
 
 const ViewerText = ({ data }: ViewerProps) => {
-    const [markdown, setMarkdown] = useState<string | null>();
-    const fileSystemPaths = useStore((state) => state.fileSystemPaths);
-
-    useEffect(() => {
-        console.log(getContent(data.path));
-        setMarkdown(null);
-        fetch(getContent(data.path))
-            .then((res) => {
-                if (res.status === 404) {
-                    return "";
-                }
-
-                return res.text();
-            })
-            .then(setMarkdown);
-    }, [data.path]);
+    const content = useFileContent(data.path);
 
     return (
         <article className="max-w-prose mx-auto overflow-x-hidden pb-10">
             <h1 className="text-xl font-semibold mb-2">
                 {formatName(data.name)}
             </h1>
-            <div className="prose prose-slate">
-                {markdown ? (
-                    rehypeMarkdown(markdown, fileSystemPaths)
-                ) : (
-                    <SkeletonItem />
-                )}
-            </div>
+            <ViewerTextPreview content={content} />
         </article>
     );
 };

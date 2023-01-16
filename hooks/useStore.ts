@@ -2,7 +2,8 @@ import create from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { Store } from "./useStore.d";
-import { createFileSystem, getItem } from "../lib/fileSystem";
+import { buildFileSystem, createFileSystem, getItem } from "../lib/fileSystem";
+import { useEffect } from "react";
 
 const useStore = create(
     immer<Store>((set, get) => ({
@@ -73,3 +74,15 @@ const useStore = create(
 );
 
 export default useStore;
+
+export const registerFileSystem = (name: string, paths: string[]) => {
+    const set = useStore((state) => state.set);
+
+    useEffect(() => {
+        set((state) => {
+            state.fileSystem = buildFileSystem(paths);
+            state.fileSystem.name = name;
+            state.fileSystemPaths = paths;
+        });
+    }, []);
+};
