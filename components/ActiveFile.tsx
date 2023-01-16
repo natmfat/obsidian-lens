@@ -11,10 +11,13 @@ interface ActiveFileProps {
 }
 
 const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
-    const [removeActive, setFocusedFile] = useStore((state) => [
-        state.removeActive,
-        state.setFocusedFile,
-    ]);
+    const [removeActive, setFocusedFile, setFocusedNearby] = useStore(
+        (state) => [
+            state.removeActive,
+            state.setFocusedFile,
+            state.setFocusedNearby,
+        ]
+    );
 
     return (
         <div
@@ -33,8 +36,9 @@ const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
             <div
                 className="grid items-center flex-shrink-0"
                 onClick={(e) => {
+                    setFocusedNearby();
                     removeActive(path);
-                    setFocusedFile(null);
+
                     e.stopPropagation();
                     e.preventDefault();
                 }}

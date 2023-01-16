@@ -70,6 +70,17 @@ const useStore = create(
             set((state) => {
                 state.focusedFile = path;
             }),
+        setFocusedNearby: () =>
+            set((state) => {
+                const idx = state.activeFiles.findIndex(
+                    (file) => file.path === state.focusedFile
+                );
+
+                state.focusedFile =
+                    state.activeFiles[idx - 1]?.path ||
+                    state.activeFiles[idx + 1]?.path ||
+                    null;
+            }),
     }))
 );
 

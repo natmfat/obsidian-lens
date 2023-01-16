@@ -17,6 +17,7 @@ export interface Store {
 
     focusedFile: string | null | "none";
     setFocusedFile: (path: string | null) => void;
+    setFocusedNearby: () => void;
 }
 
 export interface Item {

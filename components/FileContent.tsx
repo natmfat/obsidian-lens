@@ -6,11 +6,7 @@ import { getItem } from "../lib/fileSystem";
 import ActiveFiles from "./ActiveFiles";
 import Viewer from "./viewers/Viewer";
 
-interface FileContentProps {
-    defaultFile?: string;
-}
-
-const FileContent = ({ defaultFile }: FileContentProps) => {
+const FileContent = () => {
     const [data, setData] = useState<Item | null>(null);
     const [fileSystem, setActive, focusedFile, setFocusedFile] = useStore(
         (state) => [
@@ -24,17 +20,10 @@ const FileContent = ({ defaultFile }: FileContentProps) => {
     useEffect(() => {
         if (focusedFile) {
             setData(getItem(fileSystem, focusedFile) as Item);
-        } else if (defaultFile) {
-            const item = getItem(fileSystem, defaultFile) as Item;
-            if (item) {
-                setData(item);
-                setActive(item);
-                setFocusedFile(item.path);
-            }
         } else {
             setData(null);
         }
-    }, [defaultFile, focusedFile, fileSystem]);
+    }, [focusedFile, fileSystem]);
 
     return (
         <div className="max-h-screen relative overflow-x-hidden overflow-y-auto">
