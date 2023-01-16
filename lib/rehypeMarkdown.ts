@@ -11,11 +11,9 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeKatex from "rehype-katex";
 import rehypeReact from "rehype-react";
 
-import rehypeObsidian from "./rehypeObsidian";
-import { getContent, getItem, getItemByPath } from "./fileSystem";
-import type { Item } from "../hooks/useStore.d";
+import { getContent, getItemPathFlat } from "./fileSystem";
 
-const rehypeMarkdown = (markdown: string, fileSystem: Item) => {
+const rehypeMarkdown = (markdown: string, fileSystemPaths: string[]) => {
     return (
         unified()
             .use(remarkParse)
@@ -26,22 +24,8 @@ const rehypeMarkdown = (markdown: string, fileSystem: Item) => {
             .use(remarkLinks, {
                 pageResolver: (path: string) => [path],
                 hrefTemplate: (path: string) => {
-                    if (!path.includes(".")) {
-                        path += ".md";
-                    }
-
-                    const item =
-                        getItem(fileSystem, path, "name") ||
-                        getItemByPath(fileSystem, path);
-
-                    if (item) {
-                        return getContent(item.path);
-                    }
-
-                    // if (item && "downloadUrl" in item) {
-                    //     return item.downloadUrl;
-                    // }
-
+                    const itemPath = getItemPathFlat(path, fileSystemPaths);
+                    if (itemPath) return getContent(itemPath);
                     return path;
                 },
             })

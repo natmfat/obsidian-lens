@@ -1,4 +1,5 @@
 import { Vault } from "../schema";
+import { isFile, getExtension, getItemPathFlat } from "./fileSystem";
 
 // OAuth response data
 export interface AccessTokenJSON {
@@ -64,6 +65,43 @@ export default class GithubClient {
             method: "GET",
             headers: this.headers,
         }).then((res) => res.json());
+    }
+
+    async fetchLinks(paths: string[]) {
+        const links: Record<string, string[]> = {};
+
+        for (const path of paths) {
+            // must be a file
+            if (!(isFile(path) && getExtension(path) === "md")) continue;
+
+            // must have content
+            const data = await this.fetchContent(path);
+            if (!data.content) continue;
+
+            const content = Buffer.from(data.content, "base64").toString();
+            const matches = (content.match(/\[\[(.*?)\]\]/gm) || [])
+                .map((match) =>
+                    match
+                        .substring(2, match.length - 2)
+                        .split("|")
+                        .shift()
+                )
+                .filter((match) => match) as string[];
+
+            // must have links
+            if (!(matches && matches.length > 0)) continue;
+
+            const linkRefs: string[] = [];
+            for (const match of matches) {
+                const item = getItemPathFlat(match, paths);
+                item && linkRefs.push(item);
+            }
+
+            // finally save the references
+            links[path] = linkRefs;
+        }
+
+        return links;
     }
 
     /**

@@ -16,7 +16,6 @@ export const config = {
     },
 };
 
-// TODO: codegen
 // TODO: client graphql (urql)
 
 export default createYoga<{
@@ -40,9 +39,11 @@ export default createYoga<{
         ],
         resolvers: {
             Query: {
+                ...scalarResolvers.Query,
                 ...vaultResolvers.Query,
             },
             Mutation: {
+                ...scalarResolvers.Mutation,
                 ...vaultResolvers.Mutation,
             },
         },

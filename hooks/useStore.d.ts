@@ -2,6 +2,7 @@ export interface Store {
     set: (fn: (state: Store) => void) => void;
 
     fileSystem: Item;
+    fileSystemPaths: string[];
     getItem: (path: string) => Item | null;
     clearFileSystem: () => void;
     clearItem: (path: string) => void;
@@ -21,5 +22,6 @@ export interface Store {
 export interface Item {
     name: string;
     path: string;
-    children?: Item[];
+    children?: Item[]; // if it is a folder it can contain other notes
+    refs?: string[]; // references to other notes
 }

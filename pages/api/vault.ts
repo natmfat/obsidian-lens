@@ -10,7 +10,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const accessToken = getCookie("access_token", { req, res }) as string;
-    const vault = await new VaultModel().fetch();
+    const vault = (await new VaultModel().fetch()).disconnect();
     const client = new GithubClient(accessToken, vault.owner, vault.repo);
     const path = req.query.path as string;
     const raw = req.query.raw === "true";

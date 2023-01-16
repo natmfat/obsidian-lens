@@ -78,6 +78,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   updateVault: Vault;
+  updateVaultLinks: Scalars['JSON'];
   updateVaultPaths: Vault;
 };
 
@@ -91,6 +92,7 @@ export type MutationUpdateVaultArgs = {
 export type Query = {
   __typename?: 'Query';
   getVault: Vault;
+  getVaultLinks: Scalars['JSON'];
 };
 
 export type Vault = {
@@ -442,6 +444,7 @@ export interface MacScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   updateVault?: Resolver<ResolversTypes['Vault'], ParentType, ContextType, RequireFields<MutationUpdateVaultArgs, 'name' | 'owner' | 'repo'>>;
+  updateVaultLinks?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   updateVaultPaths?: Resolver<ResolversTypes['Vault'], ParentType, ContextType>;
 };
 
@@ -499,6 +502,7 @@ export interface PostalCodeScalarConfig extends GraphQLScalarTypeConfig<Resolver
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getVault?: Resolver<ResolversTypes['Vault'], ParentType, ContextType>;
+  getVaultLinks?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
 };
 
 export interface RgbScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['RGB'], any> {

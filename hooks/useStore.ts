@@ -9,6 +9,7 @@ const useStore = create(
         set: (fn) => set(fn),
 
         fileSystem: createFileSystem(),
+        fileSystemPaths: [],
         clearFileSystem: () =>
             set((state) => {
                 state.fileSystem.children = [];

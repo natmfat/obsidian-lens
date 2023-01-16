@@ -7,9 +7,11 @@ type Vault {
 
 extend type Query {
     getVault: Vault!
+    getVaultLinks: JSON!
 }
 
 extend type Mutation {
     updateVault(owner: String!, repo: String!, name: String!): Vault!
     updateVaultPaths: Vault!
+    updateVaultLinks: JSON!
 }

@@ -106,13 +106,35 @@ export const getItem = (
     return null;
 };
 
+export const getItemPathFlat = (targetPath: string, paths: string[]) => {
+    for (const path of paths) {
+        const fileName = path.split("/").pop();
+
+        if (
+            path === targetPath ||
+            fileName === targetPath ||
+            fileName === targetPath + ".md"
+        ) {
+            return path;
+        }
+    }
+
+    return targetPath;
+};
+
+/**
+ * Utility to determine if a path is a file (if it has a dot or not)
+ * @param path File path
+ * @returns Is it a file
+ */
+export const isFile = (path: string) => path.split(".").length > 1;
+
 /**
  * Build a client compatible file system
  * @param paths Flattened list of paths
  * @returns Entire Obsidian vault file system
  */
 export const buildFileSystem = (paths: string[]): Item => {
-    const isFile = (path: string) => path.split(".").length > 1;
     const cache: Record<string, any> = { children: [] };
     for (const path of paths) {
         const components = path

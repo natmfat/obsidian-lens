@@ -7,7 +7,7 @@ import SkeletonItem from "../SkeletonItem";
 
 const ViewerText = ({ data }: ViewerProps) => {
     const [markdown, setMarkdown] = useState<string | null>();
-    const fileSystem = useStore((state) => state.fileSystem);
+    const fileSystemPaths = useStore((state) => state.fileSystemPaths);
 
     useEffect(() => {
         console.log(getContent(data.path));
@@ -30,7 +30,7 @@ const ViewerText = ({ data }: ViewerProps) => {
             </h1>
             <div className="prose prose-slate">
                 {markdown ? (
-                    rehypeMarkdown(markdown, fileSystem)
+                    rehypeMarkdown(markdown, fileSystemPaths)
                 ) : (
                     <SkeletonItem />
                 )}

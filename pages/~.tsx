@@ -24,6 +24,7 @@ export default function Dashboard({
         set((state) => {
             state.fileSystem = buildFileSystem(paths);
             state.fileSystem.name = name;
+            state.fileSystemPaths = paths;
         });
     }, []);
 
@@ -44,7 +45,7 @@ export default function Dashboard({
 
 export const getServerSideProps: GetServerSideProps = async () => {
     const vault = new VaultModel();
-    await vault.fetch();
+    (await vault.fetch()).disconnect();
 
     return {
         props: {

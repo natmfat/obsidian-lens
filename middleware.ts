@@ -12,10 +12,6 @@ export async function middleware(req: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-    matcher: [
-        "/api/vault",
-        "/api/vaultFull",
-        "/api/vaultResolvePath",
-        "/~/:slug*",
-    ],
+    matcher: ["/api/vault", "/~"],
+    // "/~/:slug*"
 };

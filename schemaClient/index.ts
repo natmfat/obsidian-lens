@@ -77,6 +77,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   updateVault: Vault;
+  updateVaultLinks: Scalars['JSON'];
   updateVaultPaths: Vault;
 };
 
@@ -90,6 +91,7 @@ export type MutationUpdateVaultArgs = {
 export type Query = {
   __typename?: 'Query';
   getVault: Vault;
+  getVaultLinks: Scalars['JSON'];
 };
 
 export type Vault = {
