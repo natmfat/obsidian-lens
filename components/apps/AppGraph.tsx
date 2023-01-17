@@ -21,7 +21,10 @@ const AppGraph = () => {
     return (
         <>
             <h1>Graph View</h1>
-            <p>Explore your notes as a group of interconnected nodes.</p>
+            <p>
+                Explore your notes as a group of interconnected nodes. Click a
+                node to open a new note.
+            </p>
             <div className="h-96 rounded-md bg-slate-200 overflow-hidden border">
                 {data && (
                     <ForceGraph2D

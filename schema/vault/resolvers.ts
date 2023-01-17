@@ -17,7 +17,6 @@ export const Query: Resolvers["Query"] = {
         keys.forEach((key) => pl.lrange(key, 0, -1));
 
         const refsArray = (await pl.exec())?.map((row) => row[1]) as string[][];
-        console.log(refsArray[0]);
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
             const refs = refsArray[i];

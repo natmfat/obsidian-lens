@@ -4,8 +4,14 @@ import useUpdateVault from "../../hooks/useUpdateVault";
 // TODO fetching vault paths
 
 const AppAdmin = () => {
-    const { updateVaultResult, updateVault, vaultClient, setVaultClient } =
-        useUpdateVault();
+    const {
+        updateVaultResult,
+        updateVault,
+        updateVaultPathsResult,
+        updateVaultPaths,
+        vaultClient,
+        setVaultClient,
+    } = useUpdateVault();
 
     return (
         <>
@@ -48,12 +54,21 @@ const AppAdmin = () => {
             </form>
 
             <p>
-                Updating your vault is computationally expensive; use this tool
-                sparingly. It is safe to navigate to other pages or close your
-                tab after requesting a vault update.
+                Updating your vault is computationally expensive. Open up
+                Obsidian Viewer at least 5 minutes after requesting a vault
+                update. It is safe to navigate to other pages or close your tab
+                after requesting a vault update.
             </p>
 
-            <Button>Update Vault</Button>
+            <Button
+                loading={updateVaultPathsResult.fetching}
+                onClick={() => {
+                    updateVaultPaths();
+                    sessionStorage.clear();
+                }}
+            >
+                Update Vault
+            </Button>
         </>
     );
 };
