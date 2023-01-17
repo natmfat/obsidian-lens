@@ -26,23 +26,33 @@ const Apps = () => {
 
     return (
         <div className="fixed right-4 bottom-4 flex flex-col gap-2">
-            <motion.div
-                className="flex flex-col gap-2"
-                variants={variantApps}
-                initial="hidden"
-                animate={show ? "visible" : "hidden"}
-            >
-                <AppIcon modalTitle="Help" modalChildren={<AppHelp />}>
-                    <IoHelp />
-                </AppIcon>
-                <AppIcon modalTitle="Settings" modalChildren={<AppAdmin />}>
-                    <IoPerson />
-                </AppIcon>
-                <AppIcon modalTitle="Graph View" modalChildren={<AppGraph />}>
-                    <IoAnalytics />
-                </AppIcon>
-            </motion.div>
-
+            <AnimatePresence>
+                {show && (
+                    <motion.div
+                        className="flex flex-col gap-2"
+                        variants={variantApps}
+                        initial="hidden"
+                        exit="hidden"
+                        animate="visible"
+                    >
+                        <AppIcon modalTitle="Help" modalChildren={<AppHelp />}>
+                            <IoHelp />
+                        </AppIcon>
+                        <AppIcon
+                            modalTitle="Settings"
+                            modalChildren={<AppAdmin />}
+                        >
+                            <IoPerson />
+                        </AppIcon>
+                        <AppIcon
+                            modalTitle="Graph View"
+                            modalChildren={<AppGraph />}
+                        >
+                            <IoAnalytics />
+                        </AppIcon>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <AppIcon onClick={() => setShow(!show)}>
                 <IoApps />
             </AppIcon>

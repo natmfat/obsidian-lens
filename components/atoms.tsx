@@ -15,7 +15,7 @@ export const Button = ({
     return (
         <button
             className={twMerge(
-                "bg-black text-white rounded-md px-3 py-1.5 w-fit text-sm flex gap-2 items-center disabled:bg-opacity-75",
+                "bg-slate-800 text-white rounded-md px-3 py-1.5 w-fit text-sm flex gap-2 items-center disabled:bg-opacity-75 ",
                 className
             )}
             disabled={loading}
