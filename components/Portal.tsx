@@ -3,20 +3,14 @@ import { createPortal } from "react-dom";
 
 interface PortalProps {
     children: ReactNode;
-    as?: string;
-
     [key: string]: any;
 }
 
-const Portal = ({ as = "div", children, ...props }: PortalProps) => {
-    const portalRef = useRef(
-        typeof window === "undefined" ? null : document.createElement(as)
-    );
+const PortalNothing = ({ children }: { children: ReactNode }) => {
+    return <>{children}</>;
+};
 
-    if (portalRef.current === null) {
-        return <>{children}</>;
-    }
-
+const PortalSomething = ({ portalRef, children, ...props }: PortalProps) => {
     useEffect(() => {
         if (portalRef.current) {
             Object.assign(portalRef.current, props);
@@ -27,6 +21,18 @@ const Portal = ({ as = "div", children, ...props }: PortalProps) => {
     }, []);
 
     return createPortal(children, portalRef.current);
+};
+
+const Portal = ({ children, ...props }: PortalProps) => {
+    const portalRef = useRef(
+        typeof window === "undefined" ? null : document.createElement("div")
+    );
+
+    if (portalRef.current === null) {
+        return <PortalNothing>{children}</PortalNothing>;
+    }
+
+    return <PortalSomething portalRef={portalRef}>{children}</PortalSomething>;
 };
 
 export default Portal;

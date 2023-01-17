@@ -3,24 +3,24 @@ import useFileContent from "../hooks/useFileContent";
 import useKeyboard from "../hooks/useKeyboard";
 import useStore from "../hooks/useStore";
 import { getItem } from "../lib/fileSystem";
-import FileContent from "./FileContent";
 import Portal from "./Portal";
 import { ViewerTextPreview } from "./viewers/ViewerText";
 
-const FileContentLink = ({
+const LinkNormal = ({
+    href,
+    children,
+    ...props
+}: ComponentPropsWithoutRef<"a">) => (
+    <a href={href} target="_blank" rel="noreferrer" {...props}>
+        {children}
+    </a>
+);
+
+const LinkFetch = ({
     href,
     children,
     ...props
 }: ComponentPropsWithoutRef<"a">) => {
-    // normal link
-    if (href?.startsWith("http")) {
-        return (
-            <a href={href} target="_blank" rel="noreferrer" {...props}>
-                {children}
-            </a>
-        );
-    }
-
     // retrieve content path
     const content = useFileContent(href!, true);
     const path = useRef(
@@ -96,6 +96,27 @@ const FileContentLink = ({
                 </Portal>
             )}
         </>
+    );
+};
+
+const FileContentLink = ({
+    href,
+    children,
+    ...props
+}: ComponentPropsWithoutRef<"a">) => {
+    // normal link
+    if (href?.startsWith("http")) {
+        return (
+            <LinkNormal href={href} {...props}>
+                {children}
+            </LinkNormal>
+        );
+    }
+
+    return (
+        <LinkFetch href={href} {...props}>
+            {children}
+        </LinkFetch>
     );
 };
 
