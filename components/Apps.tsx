@@ -1,14 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import {
-    IoAnalytics,
-    IoApps,
-    IoHelp,
-    IoLogOut,
-    IoPerson,
-} from "react-icons/io5";
+import { IoAnalytics, IoApps, IoHelp, IoPerson } from "react-icons/io5";
 
 import AppIcon from "./AppIcon";
+import AppAdmin from "./apps/AppAdmin";
+import AppGraph from "./apps/AppGraph";
+import AppHelp from "./apps/AppHelp";
+import Modal from "./Modal";
 
 const variantApps = {
     hidden: {
@@ -34,18 +32,13 @@ const Apps = () => {
                 initial="hidden"
                 animate={show ? "visible" : "hidden"}
             >
-                <AppIcon>
-                    <a href="/api/logout">
-                        <IoLogOut />
-                    </a>
-                </AppIcon>
-                <AppIcon>
+                <AppIcon modalTitle="Help" modalChildren={<AppHelp />}>
                     <IoHelp />
                 </AppIcon>
-                <AppIcon>
+                <AppIcon modalTitle="Settings" modalChildren={<AppAdmin />}>
                     <IoPerson />
                 </AppIcon>
-                <AppIcon>
+                <AppIcon modalTitle="Graph View" modalChildren={<AppGraph />}>
                     <IoAnalytics />
                 </AppIcon>
             </motion.div>

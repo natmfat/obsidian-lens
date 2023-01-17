@@ -8,7 +8,7 @@ const ActiveFiles = () => {
     ]);
 
     return (
-        <div className="sticky pr-2 pl-1 py-2 flex items-center gap-2 top-0 left-0 right-0 bg-white w-full overflow-x-hidden z-50">
+        <div className="sticky pr-2 pl-1 py-2 flex items-center gap-2 top-0 left-0 right-0 bg-white w-full overflow-x-hidden z-30">
             {activeFiles.map((file) => (
                 <ActiveFile
                     key={file.path}

@@ -10,7 +10,7 @@ export default function Login() {
                 <div>
                     <Logo />
                     <a
-                        className="text-center cursor-pointer bg-slate-800 text-white py-2 px-6 w-full mt-5 rounded-sm flex items-center justify-center relative"
+                        className="text-center cursor-pointer bg-slate-800 text-white py-2 px-6 w-full mt-5 rounded-md flex items-center justify-center relative"
                         href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scopes=repo,user`}
                     >
                         <IoLogoGithub className="text-xl absolute left-3" />

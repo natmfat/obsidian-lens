@@ -24,7 +24,7 @@ const ViewerText = ({ data }: ViewerProps) => {
 
     return (
         <article className="max-w-prose mx-auto overflow-x-hidden pb-10">
-            <h1 className="text-xl font-semibold mb-2">
+            <h1 className="text-4xl font-extrabold mb-2">
                 {formatName(data.name)}
             </h1>
             <ViewerTextPreview content={content} />

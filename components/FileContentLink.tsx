@@ -57,13 +57,24 @@ const FileContentLink = ({
                     }
                 }}
                 onMouseOver={(e) => {
-                    if (keys.includes("Control")) {
-                        setShow(true);
-                        setPos({
-                            x: e.clientX,
-                            y: e.clientY,
-                        });
+                    if (!keys.includes("Control")) {
+                        return;
                     }
+
+                    // TODO: atm this is hardcoded because we know w-96 h-96
+                    // make it dynamic at some point
+                    const size = 384;
+
+                    setShow(true);
+                    setPos({
+                        x:
+                            e.clientX -
+                            (e.clientX + size > innerWidth ? size : 0),
+                        y:
+                            e.clientY +
+                            scrollY -
+                            (e.clientY + size > innerHeight ? size : 0),
+                    });
                 }}
             >
                 {children}
@@ -71,7 +82,7 @@ const FileContentLink = ({
             {show && (
                 <Portal>
                     <div
-                        className="fixed w-96 h-96 z-10 bg-white border shadow-lg overflow-y-auto p-4 rounded-sm"
+                        className="fixed w-96 h-96 z-50 bg-white border shadow-lg overflow-y-auto p-4 rounded-sm"
                         style={{
                             left: `${pos.x}px`,
                             top: `${pos.y}px`,

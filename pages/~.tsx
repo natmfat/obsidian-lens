@@ -5,11 +5,9 @@ import FileSystemFull from "../components/FileSystemFull";
 import FileContent from "../components/FileContent";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import VaultModel from "../schema/vault/model";
-import { useEffect } from "react";
-import useStore, { registerFileSystem } from "../hooks/useStore";
-import { buildFileSystem } from "../lib/fileSystem";
-import Apps from "../components/Apps";
+import { registerFileSystem } from "../hooks/useStore";
 import { registerKeyboard } from "../hooks/useKeyboard";
+import Apps from "../components/Apps";
 
 // TODO:
 // Ctrl + file click = new item

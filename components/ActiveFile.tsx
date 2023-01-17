@@ -26,7 +26,7 @@ const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
             }}
             className={twMerge(
                 "bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none flex-shrink overflow-hidden justify-between border",
-                selected && "border-slate-400"
+                selected && "border-slate-300"
             )}
         >
             <span className="whitespace-nowrap max-w-full overflow-x-hidden text-ellipsis">
