@@ -4,52 +4,32 @@ A free, self-hosted option for your personal Obsidian vaults. Obsidian viewer wi
 
 ## Configuration
 
-Edit the following files to get started
-
--   `vault.config.json`: Vault name & where it is located
--   `.env.local`: Credentials (currently required)
-
-### Setting up Vault Config
-
-If you vault is currently located at `https://github.com/nathan-pham/obsidian-vault`, you would write
-
-```json
-{
-    "vaultName": "Programming Vault", // can be called anything
-    "vaultOwner": "nathan-pham", // your GitHub username
-    "vaultRepo": "obsidian-vault" // your GitHub repository path
-}
-```
-
-### Setting up GitHub Credentials
-
-An example is provided in `.env.example`.  
-You could set the redirect URI to `http://localhost:3000/api/auth`, but recognize you will need to change it if you deploy Obsidian vault to the cloud.
+Create and edit `.env.local` to get started. An example is provided in `.env.example`.
 
 ```
 GITHUB_CLIENT_SECRET=<app secret>
+REDIS_PASSWORD=<redis connection password>
 NEXT_PUBLIC_GITHUB_CLIENT_ID=<app client id>
 NEXT_PUBLIC_GITHUB_REDIRECT_URI=<redirect url>
 ```
 
+-   You could set the redirect URI to `http://localhost:3000/api/login`, but eventually you will need to change it if you deploy Obsidian vault to the cloud.
+-   You can create a free [Redis account](http://redis.com); the base image has a limit of 30mb which is more than enough to store file paths and names.
+
 ### Vault Cache
 
-Obsidian Viewer can fetch all of your files in the browser, but the GitHub API may rate limit your requests. Ideally you should create a file system cache of every file in your current Obsidian vault. Think of it as saving all of your current vault files to the Obsidian Viewer directory (but amassed into a single JSON file.)
-
-1. Set "logging" to true in `vault.config.json`
-2. Sign into Obsidian Viewer and copy your access token printed into the console.
-3. Run `cacheFileSystem.ts`. It will create `fileSystem.json`, which contains every file necessary for Obsidian Viewer to work.
-4. Disable logging in the vault config.
-
-TODO: Admin page
-
--   Check for updates
--   Save to external database (redis)
--   https://app.redislabs.com/#/subscriptions/subscription/1942103/bdb
--   Transition all APIs to use Redis
+Obsidian Viewer can fetch all of your files in the browser, but the GitHub API may rate limit your requests. Ideally you should create a file system cache of every file in your current Obsidian vault. You can request a vault update through GraphQL or through the settings interface.
 
 ## API Methods
 
 Obsidian Viewer exposes a variety of routes to retrieve (not modify) files from your vault. They are briefly described below.
 
+-   `/api/login`: Used internally to obtain the GitHub access token (redirect URI should point here)
+-   `/api/logout`: Clears GitHub access token and returns you to home
+-   `/api/vault?path=<path>&raw=true`: Request a file resource by path
+-   `/api/graphql`: Cache file paths and connections to Redis (among other things)
+
 ## Screenshots
+
+![Login Page](/screenshots/Screen%20Shot%202023-01-17%20at%208.48.53%20AM.png)
+![Vault View](/screenshots/Screen%20Shot%202023-01-17%20at%208.51.20%20AM.png)
