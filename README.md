@@ -13,8 +13,8 @@ NEXT_PUBLIC_GITHUB_CLIENT_ID=<app client id>
 NEXT_PUBLIC_GITHUB_REDIRECT_URI=<redirect url>
 ```
 
--   You could set the redirect URI to `http://localhost:3000/api/login`, but eventually you will need to change it if you deploy Obsidian vault to the cloud.
--   You can create a free [Redis account](http://redis.com); the base image has a limit of 30mb which is more than enough to store file paths and names.
+- You could set the redirect URI to `http://localhost:3000/api/login`, but eventually you will need to change it if you deploy Obsidian vault to the cloud.
+- You can create a free [Redis account](http://redis.com); the base image has a limit of 30mb which is more than enough to store file paths and names.
 
 ### Vault Cache
 
@@ -24,10 +24,10 @@ Obsidian Viewer can fetch all of your files in the browser, but the GitHub API m
 
 Obsidian Viewer exposes a variety of routes to retrieve (not modify) files from your vault. They are briefly described below.
 
--   `/api/login`: Used internally to obtain the GitHub access token (redirect URI should point here)
--   `/api/logout`: Clears GitHub access token and returns you to home
--   `/api/vault?path=<path>&raw=true`: Request a file resource by path
--   `/api/graphql`: Cache file paths and connections to Redis (among other things)
+- `/api/login`: Used internally to obtain the GitHub access token (redirect URI should point here)
+- `/api/logout`: Clears GitHub access token and returns you to home
+- `/api/vault?path=<path>&raw=true`: Request a file resource by path
+- `/api/graphql`: Cache file paths and connections to Redis (among other things)
 
 ## Screenshots
 

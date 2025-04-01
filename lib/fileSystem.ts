@@ -1,17 +1,17 @@
-import type { Store, Item } from "../hooks/useStore.d";
+import type { Item, Store } from "../hooks/useStore.d";
 
 /**
  * Create an empty file system (basically a folder without a parent)
  * @returns Empty file system
  */
 export const createFileSystem = (): Item => ({
-    name: "Unnamed Vault",
-    path: "/",
-    children: [],
+  name: "Unnamed Vault",
+  path: "/",
+  children: [],
 });
 
 export const getContent = (path: string) =>
-    `/api/vault?path=${encodeURIComponent(path)}&raw=true`;
+  `/api/vault?path=${encodeURIComponent(path)}&raw=true`;
 
 /**
  * Format the name of a file
@@ -20,8 +20,8 @@ export const getContent = (path: string) =>
  * @returns File name without the extension
  */
 export const formatName = (fileName: string) => {
-    const components = fileName.split(".");
-    return components.slice(0, -1).join(".");
+  const components = fileName.split(".");
+  return components.slice(0, -1).join(".");
 };
 
 /**
@@ -30,7 +30,7 @@ export const formatName = (fileName: string) => {
  * @returns Is file an image given the extension
  */
 export const isNameImage = (fileName: string) =>
-    /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(fileName);
+  /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(fileName);
 
 /**
  * Get the extension from the file
@@ -38,7 +38,7 @@ export const isNameImage = (fileName: string) =>
  * @returns Lowercased file extension without the .
  */
 export const getExtension = (fileName: string) =>
-    fileName.split(".").pop()?.toLowerCase();
+  fileName.split(".").pop()?.toLowerCase();
 
 /**
  * Iteratively get an item by a path
@@ -47,30 +47,30 @@ export const getExtension = (fileName: string) =>
  * @returns The item, if found
  */
 export const getItemByPath = (parent: Item, path: string) => {
-    const pathComponents = path
-        .split("/")
-        .map((t) => t.trim())
-        .filter((t) => t.length);
+  const pathComponents = path
+    .split("/")
+    .map((t) => t.trim())
+    .filter((t) => t.length);
 
-    let currentItem: Item = parent;
-    while (pathComponents.length && currentItem.children) {
-        let currentPath = pathComponents.shift();
-        let foundPath = false;
+  let currentItem: Item = parent;
+  while (pathComponents.length && currentItem.children) {
+    let currentPath = pathComponents.shift();
+    let foundPath = false;
 
-        for (const item of currentItem.children) {
-            if (item.name === currentPath) {
-                // @ts-ignore
-                currentItem = item;
-                foundPath = true;
-            }
-        }
-
-        if (!foundPath) {
-            return null;
-        }
+    for (const item of currentItem.children) {
+      if (item.name === currentPath) {
+        // @ts-ignore
+        currentItem = item;
+        foundPath = true;
+      }
     }
 
-    return currentItem;
+    if (!foundPath) {
+      return null;
+    }
+  }
+
+  return currentItem;
 };
 
 /**
@@ -82,44 +82,44 @@ export const getItemByPath = (parent: Item, path: string) => {
  * @returns The item, if found
  */
 export const getItem = (
-    parent: Item,
-    path: string,
-    field?: keyof Item
+  parent: Item,
+  path: string,
+  field?: keyof Item,
 ): ReturnType<Store["getItem"]> => {
-    if (parent.path === path) {
-        return parent;
+  if (parent.path === path) {
+    return parent;
+  }
+
+  if (!parent.children) return null;
+
+  for (const child of parent.children) {
+    if (child[field || "path"] === path) {
+      return child;
+    } else if ("children" in child) {
+      const item = getItem(child, path, field);
+      if (item) {
+        return item;
+      }
     }
+  }
 
-    if (!parent.children) return null;
-
-    for (const child of parent.children) {
-        if (child[field || "path"] === path) {
-            return child;
-        } else if ("children" in child) {
-            const item = getItem(child, path, field);
-            if (item) {
-                return item;
-            }
-        }
-    }
-
-    return null;
+  return null;
 };
 
 export const getItemPathFlat = (targetPath: string, paths: string[]) => {
-    for (const path of paths) {
-        const fileName = path.split("/").pop();
+  for (const path of paths) {
+    const fileName = path.split("/").pop();
 
-        if (
-            path === targetPath ||
-            fileName === targetPath ||
-            fileName === targetPath + ".md"
-        ) {
-            return path;
-        }
+    if (
+      path === targetPath ||
+      fileName === targetPath ||
+      fileName === targetPath + ".md"
+    ) {
+      return path;
     }
+  }
 
-    return targetPath;
+  return targetPath;
 };
 
 /**
@@ -135,34 +135,34 @@ export const isFile = (path: string) => path.split(".").length > 1;
  * @returns Entire Obsidian vault file system
  */
 export const buildFileSystem = (paths: string[]): Item => {
-    const cache: Record<string, any> = { children: [] };
-    for (const path of paths) {
-        const components = path
-            .split("/")
-            .map((p) => p.trim())
-            .filter((p) => p.length);
+  const cache: Record<string, any> = { children: [] };
+  for (const path of paths) {
+    const components = path
+      .split("/")
+      .map((p) => p.trim())
+      .filter((p) => p.length);
 
-        components.reduce((acc: Record<string, any>, name: string) => {
-            if (!acc.hasOwnProperty(name)) {
-                acc[name] = { children: [] };
+    components.reduce((acc: Record<string, any>, name: string) => {
+      if (!acc.hasOwnProperty(name)) {
+        acc[name] = { children: [] };
 
-                const item = { name, path } as Item;
-                acc.children.push(
-                    isFile(name)
-                        ? item
-                        : {
-                              ...item,
-                              children: acc[name].children,
-                          }
-                );
-            }
+        const item = { name, path } as Item;
+        acc.children.push(
+          isFile(name)
+            ? item
+            : {
+                ...item,
+                children: acc[name].children,
+              },
+        );
+      }
 
-            return acc[name];
-        }, cache);
-    }
+      return acc[name];
+    }, cache);
+  }
 
-    return {
-        ...createFileSystem(),
-        children: cache.children,
-    };
+  return {
+    ...createFileSystem(),
+    children: cache.children,
+  };
 };

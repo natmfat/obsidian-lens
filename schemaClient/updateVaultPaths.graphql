@@ -1,6 +1,6 @@
 mutation {
-    updateVaultPaths {
-        paths
-    }
-    updateVaultLinks
+  updateVaultPaths {
+    paths
+  }
+  updateVaultLinks
 }

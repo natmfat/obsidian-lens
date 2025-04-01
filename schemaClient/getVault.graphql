@@ -1,7 +1,7 @@
 query {
-    getVault {
-        owner
-        repo
-        name
-    }
+  getVault {
+    owner
+    repo
+    name
+  }
 }

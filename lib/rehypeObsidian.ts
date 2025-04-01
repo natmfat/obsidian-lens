@@ -17,46 +17,46 @@ tags
 */
 
 const makeTransformer = () => {
-    return (tree: Root) => {
-        const mappedChilden = tree.children.map((child) =>
-            map(child, (node: RootContent) => {
-                if (node.type !== "text") {
-                    return node;
-                }
+  return (tree: Root) => {
+    const mappedChilden = tree.children.map((child) =>
+      map(child, (node: RootContent) => {
+        if (node.type !== "text") {
+          return node;
+        }
 
-                const children = replaceToArray(
-                    node.value,
-                    /!?\[[^\]]*\]./,
-                    (data) => ({ data })
-                ).map<ElementContent>((segment: any) => {
-                    if (typeof segment === "string") {
-                        return {
-                            type: "text",
-                            value: segment,
-                        };
-                    }
+        const children = replaceToArray(
+          node.value,
+          /!?\[[^\]]*\]./,
+          (data) => ({ data }),
+        ).map<ElementContent>((segment: any) => {
+          if (typeof segment === "string") {
+            return {
+              type: "text",
+              value: segment,
+            };
+          }
 
-                    return {
-                        type: "text",
-                        value: "<<" + segment.data + ">>",
-                    };
-                });
+          return {
+            type: "text",
+            value: "<<" + segment.data + ">>",
+          };
+        });
 
-                const result: Content = {
-                    type: "element",
-                    tagName: "span",
-                    children,
-                };
-
-                return result;
-            })
-        );
-
-        return {
-            ...tree,
-            children: mappedChilden,
+        const result: Content = {
+          type: "element",
+          tagName: "span",
+          children,
         };
+
+        return result;
+      }),
+    );
+
+    return {
+      ...tree,
+      children: mappedChilden,
     };
+  };
 };
 
 export default makeTransformer;

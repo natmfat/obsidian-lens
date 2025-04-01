@@ -1,5 +1,5 @@
 import { Vault } from "../schema";
-import { isFile, getExtension, getItemPathFlat } from "./fileSystem";
+import { getExtension, getItemPathFlat, isFile } from "./fileSystem";
 
 // OAuth response data
 export interface AccessTokenJSON {

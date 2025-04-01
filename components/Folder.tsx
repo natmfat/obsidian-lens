@@ -7,28 +7,28 @@ import FileSystem from "./FileSystem";
 import LoadingIcon from "./LoadingIcon";
 
 const Folder = (props: Item) => {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    return (
-        <>
-            <div
-                className="item"
-                onClick={() => {
-                    setOpen(!open);
-                }}
-            >
-                {open ? <IoChevronDown /> : <IoChevronForward />}
-                <span>{props.name}</span>
-                {/* {loading && <LoadingIcon />} */}
-            </div>
-            <div className="pl-6 relative before:absolute before:left-3.5 before:h-full before:w-[1px] before:bg-slate-400">
-                {/* {open && <FileSystem {...props} />} */}
-                <div className={twMerge("hidden", open && "block")}>
-                    <FileSystem {...props} />
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <div
+        className="item"
+        onClick={() => {
+          setOpen(!open);
+        }}
+      >
+        {open ? <IoChevronDown /> : <IoChevronForward />}
+        <span>{props.name}</span>
+        {/* {loading && <LoadingIcon />} */}
+      </div>
+      <div className="pl-6 relative before:absolute before:left-3.5 before:h-full before:w-[1px] before:bg-slate-400">
+        {/* {open && <FileSystem {...props} />} */}
+        <div className={twMerge("hidden", open && "block")}>
+          <FileSystem {...props} />
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Folder;
