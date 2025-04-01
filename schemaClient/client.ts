@@ -1,7 +1,8 @@
-import { createClient } from "urql";
+import { Client, cacheExchange, fetchExchange } from "urql";
 
-const client = createClient({
-    url: "/api/graphql",
+const client = new Client({
+  url: "/api/graphql",
+  exchanges: [cacheExchange, fetchExchange],
 });
 
 export default client;
