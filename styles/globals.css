@@ -1,44 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* File System */
 .item {
-    @apply flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors select-none overflow-x-hidden;
+  @apply flex items-center gap-2 text-sm px-2 py-0.5 rounded-sm cursor-pointer hover:bg-slate-300 transition-colors select-none overflow-x-hidden;
 }
 
 .item svg {
-    @apply flex-shrink-0;
+  @apply flex-shrink-0;
 }
 
 .item > span {
-    @apply max-w-full overflow-x-hidden text-ellipsis whitespace-nowrap;
+  @apply max-w-full overflow-x-hidden text-ellipsis whitespace-nowrap;
 }
 
 /* React Split Styling */
 .gutter {
-    @apply relative cursor-col-resize;
+  @apply relative cursor-col-resize;
 }
 
 .gutter.gutter-horizontal::before {
-    content: " ";
-    @apply opacity-0 bg-blue-200 absolute w-full h-full transition-opacity;
-    /* @apply  */
+  content: " ";
+  @apply opacity-0 bg-blue-200 absolute w-full h-full transition-opacity;
+  /* @apply  */
 }
 
 .gutter:hover.gutter-horizontal::before {
-    @apply opacity-100;
+  @apply opacity-100;
 }
 
 /* Scroll Bar */
 ::-webkit-scrollbar {
-    @apply w-1 h-1;
+  @apply w-1 h-1;
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 rounded-full transition-colors;
+  @apply bg-slate-300 rounded-full transition-colors;
 }
