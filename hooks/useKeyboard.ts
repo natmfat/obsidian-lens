@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import create from "zustand";
+import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 interface KeyboardStore {
@@ -9,8 +9,8 @@ interface KeyboardStore {
   removeKey: (key: string) => void;
 }
 
-const useKeyboard = create(
-  immer<KeyboardStore>((set, get) => ({
+const useKeyboard = create<KeyboardStore>()(
+  immer((set) => ({
     set: (fn) => set(fn),
     keys: [],
     addKey: (key) =>

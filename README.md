@@ -13,7 +13,7 @@ NEXT_PUBLIC_GITHUB_CLIENT_ID=<app client id>
 NEXT_PUBLIC_GITHUB_REDIRECT_URI=<redirect url>
 ```
 
-- You could set the redirect URI to `http://localhost:3000/api/login`, but eventually you will need to change it if you deploy Obsidian vault to the cloud.
+- Create a GitHub app with a redirect URI to `http://localhost:3000/api/login` and callback URL to `http://localhost:3000/api/login`. Eventually you will need to change these if you deploy Obsidian vault to the cloud.
 - You can create a free [Redis account](http://redis.com); the base image has a limit of 30mb which is more than enough to store file paths and names.
 
 ### Vault Cache

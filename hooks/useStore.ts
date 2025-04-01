@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import create from "zustand";
+import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { buildFileSystem, createFileSystem, getItem } from "../lib/fileSystem";
 import { Store } from "./useStore.d";
 
-const useStore = create(
-  immer<Store>((set, get) => ({
+const useStore = create<Store>()(
+  immer((set, get) => ({
     set: (fn) => set(fn),
 
     fileSystem: createFileSystem(),
