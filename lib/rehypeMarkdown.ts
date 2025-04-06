@@ -1,5 +1,4 @@
 import { Fragment, createElement, useEffect, useState } from "react";
-import production from "react/jsx-runtime";
 import rehypeKatex from "rehype-katex";
 import rehypePrism from "rehype-prism-plus";
 import rehypeReact from "rehype-react";
@@ -44,7 +43,8 @@ export function useProcessor(
         .use(rehypePrism)
         .use(rehypeKatex)
         .use(rehypeReact, {
-          ...production,
+          createElement,
+          Fragment,
           components: {
             a: FileContentLink,
           },
