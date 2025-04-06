@@ -1,8 +1,9 @@
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import useFileContent from "../hooks/useFileContent";
-import useKeyboard from "../hooks/useKeyboard";
-import useStore from "../hooks/useStore";
+import useStore from "../hooks/useFileSystemStore";
+import { useKeyboardStore } from "../hooks/useKeyboardStore";
 import { getItem } from "../lib/fileSystem";
 import Portal from "./Portal";
 import { ViewerTextPreview } from "./viewers/ViewerText";
@@ -29,14 +30,16 @@ const LinkFetch = ({
   );
 
   // on link click activate file
-  const [fileSystem, setActive, setFocusedFile] = useStore((state) => [
-    state.fileSystem,
-    state.setActive,
-    state.setFocusedFile,
-  ]);
+  const [fileSystem, setActive, setFocusedFile] = useStore(
+    useShallow((state) => [
+      state.fileSystem,
+      state.setActive,
+      state.setFocusedFile,
+    ]),
+  );
 
   // manage keyboard
-  const keys = useKeyboard((state) => state.keys);
+  const keys = useKeyboardStore((state) => state.keys);
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({
     x: 0,
@@ -79,7 +82,7 @@ const LinkFetch = ({
       {show && (
         <Portal>
           <div
-            className="fixed w-96 h-96 z-50 bg-white border shadow-lg overflow-y-auto p-4 rounded-sm"
+            className="fixed w-96 h-96 z-50 bg-white border border-slate-300 shadow-lg overflow-y-auto p-4 rounded-sm"
             style={{
               left: `${pos.x}px`,
               top: `${pos.y}px`,

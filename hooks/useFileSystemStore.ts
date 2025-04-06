@@ -3,11 +3,55 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { buildFileSystem, createFileSystem, getItem } from "../lib/fileSystem";
-import { Store } from "./useStore.d";
+
+type State = {
+  fileSystem: Item;
+  fileSystemPaths: string[];
+  activeFiles: Item[];
+
+  focusedFile: string | null | "none";
+};
+
+type Actions = {
+  set: (fn: (state: Store) => void) => void;
+
+  setInitialStore: (name: string, paths: string[]) => void;
+
+  getItem: (path: string) => Item | null;
+  clearFileSystem: () => void;
+  clearItem: (path: string) => void;
+  addChildren: (path: string, items: Item[]) => void;
+  updateItem: (path: string, data: Partial<Item>) => void;
+
+  // simply save the file into memory
+  // this works because we don't care if the fetched data is stale
+  setActive: (file: Item) => void;
+  removeActive: (path: string) => void;
+
+  setFocusedFile: (path: string | null) => void;
+  setFocusedNearby: () => void;
+};
+
+export type Store = State & Actions;
+
+export type Item = {
+  name: string;
+  path: string;
+  children?: Item[]; // if it is a folder it can contain other notes
+  refs?: string[]; // references to other notes
+};
 
 const useStore = create<Store>()(
   immer((set, get) => ({
     set: (fn) => set(fn),
+
+    setInitialStore: (name, paths) => {
+      set((state) => {
+        state.fileSystem = buildFileSystem(paths);
+        state.fileSystem.name = name;
+        state.fileSystemPaths = paths;
+      });
+    },
 
     fileSystem: createFileSystem(),
     fileSystemPaths: [],
@@ -86,14 +130,9 @@ const useStore = create<Store>()(
 
 export default useStore;
 
-export const registerFileSystem = (name: string, paths: string[]) => {
-  const set = useStore((state) => state.set);
-
+export const useFileSystem = (name: string, paths: string[]) => {
+  const setInitialStore = useStore((state) => state.setInitialStore);
   useEffect(() => {
-    set((state) => {
-      state.fileSystem = buildFileSystem(paths);
-      state.fileSystem.name = name;
-      state.fileSystemPaths = paths;
-    });
+    setInitialStore(name, paths);
   }, []);
 };

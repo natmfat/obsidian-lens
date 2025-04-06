@@ -1,20 +1,19 @@
+import { z } from "zod";
+
 import { Vault } from "../schema";
 import { getExtension, getItemPathFlat, isFile } from "./fileSystem";
+import { Result, err, ok, tryCatch } from "./tryCatch";
 
-// OAuth response data
-export interface AccessTokenJSON {
-  access_token: string;
-  expires_in: number;
-}
+export type AccessToken = z.infer<typeof GithubClient.__ACCESS_TOKEN_SCHEMA>;
 
-export const defaultVault: Partial<Vault> = {
+export const defaultVault: Vault = {
   owner: "natmfat",
   repo: "obsidian-vault",
-  name: "Programming Resources",
+  name: "Obsidian Vault",
   paths: [],
-};
+} as const;
 
-export default class GithubClient {
+export class GithubClient {
   private accessToken: string;
   private vaultOwner: string;
   private vaultRepo: string;
@@ -23,34 +22,49 @@ export default class GithubClient {
    * Create a new client to interact with the GitHub API
    * @param accessToken Access token from Github OAuth
    */
-  constructor(
-    accessToken: string,
-    vaultOwner?: string | null,
-    vaultRepo?: string | null,
-  ) {
+  constructor(accessToken: string, vaultOwner?: string, vaultRepo?: string) {
     this.accessToken = accessToken;
-    this.vaultOwner = vaultOwner || defaultVault.owner!;
-    this.vaultRepo = vaultRepo || defaultVault.repo!;
+    this.vaultOwner = vaultOwner || defaultVault.owner;
+    this.vaultRepo = vaultRepo || defaultVault.repo;
   }
+
+  static __ACCESS_TOKEN_SCHEMA = z.object({
+    access_token: z.string(),
+    expires_in: z.number({ coerce: true }),
+  });
 
   /**
    * Get the access token for a user
    * @param code Code returned from OAuth
    * @returns Access token
    */
-  static getAccessToken(code: string): Promise<AccessTokenJSON> {
-    return fetch("https://github.com/login/oauth/access_token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/vnd.github+json",
-      },
-      body: JSON.stringify({
-        client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code: code,
-      }),
-    }).then((res) => res.json());
+  static async getAccessToken(code: string): Promise<Result<AccessToken>> {
+    let [data, error] = await tryCatch(
+      fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github+json",
+        },
+        body: JSON.stringify({
+          client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
+          client_secret: process.env.GITHUB_CLIENT_SECRET,
+          code: code,
+        }),
+      }).then((res) => res.json()),
+    );
+    if (error !== null) {
+      return err("Failed to parse access token into JSON");
+    }
+
+    [data, error] = await tryCatch(
+      GithubClient.__ACCESS_TOKEN_SCHEMA.parseAsync(data),
+    );
+    if (error !== null) {
+      return err("JSON does not match expected access token schema");
+    }
+
+    return ok(data);
   }
 
   /**
@@ -129,7 +143,12 @@ export default class GithubClient {
       }
     };
 
-    await fetchSubTree("", await this.fetchTreeUrl());
+    const [data, error] = await this.fetchTreeUrl();
+    if (error !== null) {
+      throw new Error("ok");
+    }
+
+    await fetchSubTree("", data);
     return children;
   }
 
@@ -152,23 +171,42 @@ export default class GithubClient {
     return this.fetch(`/git/commits/${sha}`);
   }
 
+  static __TREE_URL_SCHEMA = z.object({
+    commit: z.object({
+      commit: z.object({
+        tree: z.object({
+          url: z.string(),
+        }),
+      }),
+    }),
+  });
+
   /**
    * Get the tree URL for the main branch of the repository
    * @returns Tree url (used in fetchFileSystem recursively)
+   *
+   * https://api.github.com/repos/:owner/:repo/branches/master
    */
-  fetchTreeUrl() {
-    // https://api.github.com/repos/:owner/:repo/branches/master
-    return this.fetch("/branches/main").then(
-      (json) => json["commit"]["commit"]["tree"]["url"],
+  async fetchTreeUrl(): Promise<Result<string>> {
+    let [data, error] = await tryCatch(this.fetch("/branches/main"));
+    if (error !== null) {
+      return err("Failed to fetch branch");
+    }
+    [data, error] = await tryCatch(
+      GithubClient.__TREE_URL_SCHEMA.parseAsync(data),
     );
+    if (error !== null) {
+      return err("JSON does not match expected tree url schema");
+    }
+
+    return ok(data["commit"]["commit"]["tree"]["url"]);
   }
 
   /**
    * Builds the api string based on the configuration of the vault
    */
   get api() {
-    const baseUrl = "https://api.github.com/repos";
-    return `${baseUrl}/${this.vaultOwner}/${this.vaultRepo}`;
+    return `https://api.github.com/repos/${this.vaultOwner}/${this.vaultRepo}`;
   }
 
   /**
@@ -178,6 +216,7 @@ export default class GithubClient {
     return {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${this.accessToken}`,
+      "X-GitHub-Api-Version": "2022-11-28",
     };
   }
 }

@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import { stdin as input, stdout as output } from "process";
 import { promises as readline } from "readline";
 
-import GithubClient from "./lib/GithubClient";
+import { GithubClient } from "./lib/GithubClient";
 import { createFileSystem } from "./lib/fileSystem";
 
 const getAccessToken = async () => {

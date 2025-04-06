@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 
 import useFileContent from "../../hooks/useFileContent";
-import useStore from "../../hooks/useStore";
+import useStore from "../../hooks/useFileSystemStore";
 import { formatName, getContent } from "../../lib/fileSystem";
-import rehypeMarkdown from "../../lib/rehypeMarkdown";
+import { useProcessor } from "../../lib/rehypeMarkdown";
 import SkeletonItem from "../SkeletonItem";
 import type { ViewerProps } from "./Viewer";
 
 export const ViewerTextPreview = ({ content }: { content: string | null }) => {
   const fileSystemPaths = useStore((state) => state.fileSystemPaths);
+  const Content = useProcessor(content, fileSystemPaths);
+
   return (
     <div className="prose prose-slate">
-      {content ? rehypeMarkdown(content, fileSystemPaths) : <SkeletonItem />}
+      {content ? Content : <SkeletonItem />}
     </div>
   );
 };

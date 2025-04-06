@@ -1,4 +1,4 @@
-import type { Item } from "../../hooks/useStore.d";
+import type { Item } from "../../hooks/useFileSystemStore";
 import { getExtension, isNameImage } from "../../lib/fileSystem";
 import ViewerImage from "./ViewerImage";
 import ViewerText from "./ViewerText";

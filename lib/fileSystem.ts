@@ -1,4 +1,4 @@
-import type { Item, Store } from "../hooks/useStore.d";
+import type { Item, Store } from "../hooks/useFileSystemStore";
 
 /**
  * Create an empty file system (basically a folder without a parent)

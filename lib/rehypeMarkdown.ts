@@ -1,4 +1,5 @@
-import { Fragment, createElement } from "react";
+import { Fragment, createElement, useEffect, useState } from "react";
+import production from "react/jsx-runtime";
 import rehypeKatex from "rehype-katex";
 import rehypePrism from "rehype-prism-plus";
 import rehypeReact from "rehype-react";
@@ -14,35 +15,45 @@ import { unified } from "unified";
 import FileContentLink from "../components/FileContentLink";
 import { getContent, getItemPathFlat } from "./fileSystem";
 
-const rehypeMarkdown = (markdown: string, fileSystemPaths: string[]) => {
-  return (
-    unified()
-      .use(remarkParse)
-      .use(remarkBreaks)
-      .use(remarkGfm)
-      .use(remarkMath)
+export function useProcessor(
+  content: string | null,
+  fileSystemPaths: string[],
+) {
+  const [Content, setContent] = useState(createElement(Fragment));
 
-      .use(remarkLinks, {
-        pageResolver: (path: string) => [path],
-        hrefTemplate: (path: string) => {
-          const itemPath = getItemPathFlat(path, fileSystemPaths);
-          if (itemPath) return getContent(itemPath);
-          return path;
-        },
-      })
-      .use(remarkRehype)
-      .use(rehypePrism)
-      // .use(rehypeObsidian)
-      .use(rehypeKatex)
-      .use(rehypeReact, {
-        createElement,
-        Fragment,
-        components: {
-          a: FileContentLink,
-        },
-      })
-      .processSync(markdown).result
-  );
-};
+  useEffect(() => {
+    (async () => {
+      if (!content) {
+        return;
+      }
 
-export default rehypeMarkdown;
+      const file = await unified()
+        .use(remarkParse)
+        .use(remarkBreaks)
+        .use(remarkGfm)
+        .use(remarkMath)
+        .use(remarkLinks, {
+          pageResolver: (path: string) => [path],
+          hrefTemplate: (path: string) => {
+            const itemPath = getItemPathFlat(path, fileSystemPaths);
+            if (itemPath) return getContent(itemPath);
+            return path;
+          },
+        })
+        .use(remarkRehype)
+        .use(rehypePrism)
+        .use(rehypeKatex)
+        .use(rehypeReact, {
+          ...production,
+          components: {
+            a: FileContentLink,
+          },
+        })
+        .process(content);
+
+      setContent(file.result);
+    })();
+  }, [content, fileSystemPaths]);
+
+  return Content;
+}

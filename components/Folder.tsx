@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 
-import { Item } from "../hooks/useStore.d";
+import { Item } from "../hooks/useFileSystemStore";
 import FileSystem from "./FileSystem";
 import LoadingIcon from "./LoadingIcon";
 

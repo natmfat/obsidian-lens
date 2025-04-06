@@ -23,9 +23,9 @@ export default createYoga<{
   res: NextApiResponse;
 }>({
   graphqlEndpoint: "/api/graphql",
-  context: ({ req, res }) => {
+  context: async ({ req, res }) => {
     return {
-      accessToken: getCookie("access_token", { req, res }),
+      accessToken: await getCookie("access_token", { req, res }),
     };
   },
   schema: createSchema({

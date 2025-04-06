@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import useStore from "../hooks/useStore";
-import type { Item } from "../hooks/useStore.d";
+import useStore from "../hooks/useFileSystemStore";
+import type { Item } from "../hooks/useFileSystemStore";
 import { getItem } from "../lib/fileSystem";
 import ActiveFiles from "./ActiveFiles";
 import Viewer from "./viewers/Viewer";
@@ -9,12 +10,12 @@ import Viewer from "./viewers/Viewer";
 const FileContent = () => {
   const [data, setData] = useState<Item | null>(null);
   const [fileSystem, setActive, focusedFile, setFocusedFile] = useStore(
-    (state) => [
+    useShallow((state) => [
       state.fileSystem,
       state.setActive,
       state.focusedFile,
       state.setFocusedFile,
-    ],
+    ]),
   );
 
   useEffect(() => {

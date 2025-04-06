@@ -1,7 +1,8 @@
 import { IoClose } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
+import { useShallow } from "zustand/react/shallow";
 
-import useStore from "../hooks/useStore";
+import useStore from "../hooks/useFileSystemStore";
 import { formatName } from "../lib/fileSystem";
 
 interface ActiveFileProps {
@@ -11,11 +12,13 @@ interface ActiveFileProps {
 }
 
 const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
-  const [removeActive, setFocusedFile, setFocusedNearby] = useStore((state) => [
-    state.removeActive,
-    state.setFocusedFile,
-    state.setFocusedNearby,
-  ]);
+  const [removeActive, setFocusedFile, setFocusedNearby] = useStore(
+    useShallow((state) => [
+      state.removeActive,
+      state.setFocusedFile,
+      state.setFocusedNearby,
+    ]),
+  );
 
   return (
     <div
@@ -23,8 +26,8 @@ const ActiveFile = ({ path, name, selected }: ActiveFileProps) => {
         setFocusedFile(path);
       }}
       className={twMerge(
-        "bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none flex-shrink overflow-hidden justify-between border",
-        selected && "border-slate-300",
+        "bg-slate-200 py-0.5 px-2 text-sm rounded-sm flex items-center gap-2 cursor-pointer select-none flex-shrink overflow-hidden justify-between border border-slate-300",
+        selected && "border-slate-400",
       )}
     >
       <span className="whitespace-nowrap max-w-full overflow-x-hidden text-ellipsis">

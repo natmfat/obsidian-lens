@@ -5,8 +5,8 @@ import Apps from "../components/Apps";
 import FileContent from "../components/FileContent";
 import FileSystemFull from "../components/FileSystemFull";
 import Root from "../components/Root";
-import { registerKeyboard } from "../hooks/useKeyboard";
-import { registerFileSystem } from "../hooks/useStore";
+import { useFileSystem } from "../hooks/useFileSystemStore";
+import { useKeyboard } from "../hooks/useKeyboard";
 import VaultModel from "../schema/vault/model";
 
 // TODO:
@@ -18,8 +18,8 @@ export default function Dashboard({
   name,
   paths,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  registerFileSystem(name, paths);
-  registerKeyboard();
+  useFileSystem(name, paths);
+  useKeyboard();
 
   return (
     <Root>

@@ -1,6 +1,5 @@
 import FileSystem from "../components/FileSystem";
-import useStore from "../hooks/useStore";
-import LoadingIcon from "./LoadingIcon";
+import useStore from "../hooks/useFileSystemStore";
 
 const FileSystemFull = () => {
   const fileSystem = useStore((state) => state.fileSystem);

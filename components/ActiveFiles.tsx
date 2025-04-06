@@ -1,11 +1,12 @@
-import useStore from "../hooks/useStore";
+import { useShallow } from "zustand/react/shallow";
+
+import useStore from "../hooks/useFileSystemStore";
 import ActiveFile from "./ActiveFile";
 
 const ActiveFiles = () => {
-  const [activeFiles, focusedFile] = useStore((state) => [
-    state.activeFiles,
-    state.focusedFile,
-  ]);
+  const [activeFiles, focusedFile] = useStore(
+    useShallow((state) => [state.activeFiles, state.focusedFile]),
+  );
 
   return (
     <div className="sticky pr-2 pl-1 py-2 flex items-center gap-2 top-0 left-0 right-0 bg-white w-full overflow-x-hidden z-30">

@@ -1,7 +1,7 @@
 import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import GithubClient from "../../lib/GithubClient";
+import { GithubClient } from "../../lib/GithubClient";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,12 +13,18 @@ export default async function handler(
     return;
   }
 
-  const json = await GithubClient.getAccessToken(code);
-
-  if (json.access_token) {
-    const options = { req, res, maxAge: json.expires_in };
-    setCookie("access_token", json.access_token, options);
+  const [data, error] = await GithubClient.getAccessToken(code);
+  if (error !== null) {
+    res.status(500).json({
+      message: error.message,
+    });
+    return;
   }
 
+  await setCookie("access_token", data.access_token, {
+    req,
+    res,
+    maxAge: data.expires_in,
+  });
   res.status(200).redirect("/~");
 }

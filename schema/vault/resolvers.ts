@@ -1,5 +1,5 @@
 import type { Resolvers } from "..";
-import GithubClient from "../../lib/GithubClient";
+import { GithubClient } from "../../lib/GithubClient";
 import createRedis from "../../lib/createRedis";
 import VaultModel from "./model";
 

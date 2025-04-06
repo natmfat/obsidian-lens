@@ -1,4 +1,4 @@
-import { Store } from "../hooks/useStore.d";
+import { Store } from "../hooks/useFileSystemStore";
 import File from "./File";
 import Folder from "./Folder";
 

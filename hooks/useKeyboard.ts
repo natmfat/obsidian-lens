@@ -1,47 +1,22 @@
 import { useEffect } from "react";
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { useShallow } from "zustand/react/shallow";
 
-interface KeyboardStore {
-  set: (fn: (state: KeyboardStore) => void) => void;
-  keys: string[];
-  addKey: (key: string) => void;
-  removeKey: (key: string) => void;
-}
+import { useKeyboardStore } from "./useKeyboardStore";
 
-const useKeyboard = create<KeyboardStore>()(
-  immer((set) => ({
-    set: (fn) => set(fn),
-    keys: [],
-    addKey: (key) =>
-      set((state) => {
-        if (!state.keys.includes(key)) {
-          state.keys.push(key);
-        }
-      }),
-    removeKey: (key) =>
-      set((state) => {
-        const idx = state.keys.indexOf(key);
-        if (idx > -1) {
-          state.keys.splice(idx, 1);
-        }
-      }),
-  })),
-);
-
-export default useKeyboard;
-
-export const registerKeyboard = () => {
-  const [addKey, removeKey] = useKeyboard((state) => [
-    state.addKey,
-    state.removeKey,
-  ]);
+/**
+ * Register keyboard event listeners
+ */
+export const useKeyboard = () => {
+  // arrays are no longer stable with zustand v5
+  // https://github.com/pmndrs/zustand/issues/2741
+  // https://zustand.docs.pmnd.rs/hooks/use-shallow#useshallow-%E2%9A%9B%EF%B8%8F
+  const [addKey, removeKey] = useKeyboardStore(
+    useShallow((state) => [state.addKey, state.removeKey]),
+  );
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => addKey(e.key);
     const onKeyUp = (e: KeyboardEvent) => removeKey(e.key);
-
-    // regsiter event listeners
     addEventListener("keydown", onKeyDown);
     addEventListener("keyup", onKeyUp);
     return () => {

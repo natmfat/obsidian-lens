@@ -2,14 +2,14 @@
 import { getCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import GithubClient from "../../lib/GithubClient";
+import { GithubClient } from "../../lib/GithubClient";
 import VaultModel from "../../schema/vault/model";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const accessToken = getCookie("access_token", { req, res }) as string;
+  const accessToken = (await getCookie("access_token", { req, res })) as string;
   const vault = (await new VaultModel().fetch()).disconnect();
   const client = new GithubClient(accessToken, vault.owner, vault.repo);
   const path = req.query.path as string;
@@ -18,7 +18,8 @@ export default async function handler(
   try {
     const content = await client.fetchContent(path);
     if (raw && content.download_url) {
-      return res.status(200).redirect(content.download_url);
+      res.status(200).redirect(content.download_url);
+      return;
     }
 
     res.status(200).json({ content });

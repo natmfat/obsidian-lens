@@ -11,14 +11,14 @@ const Logo = ({ variant }: LogoProps) => {
   return (
     <div
       className={twMerge(
-        "flex items-center gap-2",
+        "flex items-center gap-1 select-none",
         variant === "sm" && "gap-1",
       )}
     >
       <Image src="/logo.png" alt="Obsidian Logo" width={size} height={size} />
       <h1
         className={twMerge(
-          "uppercase font-light text-2xl tracking-wider",
+          "uppercase font-bold text-2xl tracking-wider",
           variant === "sm" && "text-md",
         )}
       >

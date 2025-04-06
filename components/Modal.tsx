@@ -24,13 +24,12 @@ const Modal = ({
   children,
   title = "Untitled Window",
   setShow,
-  ...props
 }: ComponentPropsWithoutRef<"div"> & ModalProps) => {
   return (
     <Portal>
       <div className="fixed right-4 top-4 z-40">
         <motion.div
-          className="bg-white rounded-md border shadow-lg max-w-md p-4 overflow-y-auto "
+          className="bg-white rounded-md border border-slate-300 shadow-lg max-w-md p-4 overflow-y-auto "
           variants={variantModal}
           initial="hidden"
           exit="hidden"

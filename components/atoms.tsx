@@ -16,7 +16,7 @@ export const Button = ({
   return (
     <button
       className={twMerge(
-        "bg-slate-800 text-white rounded-md px-3 py-1.5 w-fit text-sm flex gap-2 items-center disabled:bg-opacity-75 ",
+        "bg-slate-800 hover:bg-slate-700 transition-colors text-white rounded-lg px-3 py-1.5 w-fit text-sm flex gap-2 items-center disabled:bg-opacity-75 ",
         className,
       )}
       disabled={loading}
@@ -35,7 +35,7 @@ export const Input = ({
   return (
     <input
       className={twMerge(
-        "border rounded-md px-3 py-1.5 w-fit text-sm",
+        "border border-slate-300 rounded-md px-3 py-1.5 w-fit text-sm",
         className,
       )}
       {...props}

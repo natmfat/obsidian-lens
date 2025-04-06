@@ -1,14 +1,14 @@
 import { useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import useStore from "../hooks/useStore";
-import { Item } from "../hooks/useStore.d";
+import useStore from "../hooks/useFileSystemStore";
+import { Item } from "../hooks/useFileSystemStore";
 import { formatName, getExtension } from "../lib/fileSystem";
 
 const File = (props: Item) => {
-  const [setActive, setFocusedFile] = useStore((state) => [
-    state.setActive,
-    state.setFocusedFile,
-  ]);
+  const [setActive, setFocusedFile] = useStore(
+    useShallow((state) => [state.setActive, state.setFocusedFile]),
+  );
 
   const ext = useRef(getExtension(props.name));
 

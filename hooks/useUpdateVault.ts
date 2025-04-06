@@ -4,7 +4,7 @@ import { useClient, useMutation } from "urql";
 import getVaultQuery from "../schemaClient/getVault.graphql";
 import updateVaultMutation from "../schemaClient/updateVault.graphql";
 import updateVaultPathsMutation from "../schemaClient/updateVaultPaths.graphql";
-import useStore from "./useStore";
+import useStore from "./useFileSystemStore";
 
 const useUpdateVault = () => {
   const set = useStore((state) => state.set);
