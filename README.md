@@ -1,4 +1,6 @@
-# Obsidian Viewer
+# Obsidian Lens
+
+WARNING: CURRENTLY IN A NONFUNCTIONAL STATE
 
 A free, self-hosted option for your personal Obsidian vaults. Obsidian viewer will work with any Obsidian vault on GitHub (including privated vaults if you setup the permissions correctly).
 
