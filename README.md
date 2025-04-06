@@ -4,16 +4,9 @@ A free, self-hosted option for your personal Obsidian vaults. Obsidian viewer wi
 
 ## Configuration
 
-Create and edit `.env.local` to get started. An example is provided in `.env.example`.
+Create a `.env` to get started. An example is provided in `.env.example`.
 
-```
-GITHUB_CLIENT_SECRET=<app secret>
-REDIS_PASSWORD=<redis connection password>
-NEXT_PUBLIC_GITHUB_CLIENT_ID=<app client id>
-NEXT_PUBLIC_GITHUB_REDIRECT_URI=<redirect url>
-```
-
-- Create a GitHub app with a redirect URI to `http://localhost:3000/api/login` and callback URL to `http://localhost:3000/api/login`. Eventually you will need to change these if you deploy Obsidian vault to the cloud.
+- Create a GitHub app with a callback URL to `http://localhost:3000/api/login`. Eventually you will need to change these if you deploy Obsidian vault to the cloud.
 - You can create a free [Redis account](http://redis.com); the base image has a limit of 30mb which is more than enough to store file paths and names.
 
 ### Vault Cache
@@ -33,3 +26,7 @@ Obsidian Viewer exposes a variety of routes to retrieve (not modify) files from 
 
 ![Login Page](/screenshots/Screen%20Shot%202023-01-17%20at%208.48.53%20AM.png)
 ![Vault View](/screenshots/Screen%20Shot%202023-01-17%20at%208.51.20%20AM.png)
+
+```
+
+```
